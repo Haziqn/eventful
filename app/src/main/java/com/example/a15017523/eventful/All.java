@@ -4,9 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -28,6 +35,8 @@ public class All extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private RecyclerView mBlogList;
+    private DatabaseReference mDatabase;
 
     public All() {
         // Required empty public constructor
@@ -61,10 +70,63 @@ public class All extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseRecyclerAdapter<Events, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Events, BlogViewHolder>(
+
+                Events.class,
+                R.layout.row,
+                BlogViewHolder.class,
+                mDatabase
+
+        ) {
+            @Override
+            protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
+
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setDesc(model.getDesc());
+            }
+        };
+
+        mBlogList.setAdapter(firebaseRecyclerAdapter);
+
+
+    }
+
+    public static class BlogViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+        public BlogViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+
+        }
+
+        public void setTitle(String title) {
+            TextView postTitle = (TextView)mView.findViewById(R.id.title_);
+            postTitle.setText(title);
+        }
+
+        public void setDesc(String desc) {
+            TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
+            post_desc.setText(desc);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_all, container, false);
+//        View view = inflater.inflate(R.layout.fragment_all,
+//                container, false);
+//        mDatabase = FirebaseDatabase.getInstance().getReference().child("details");
+//        mBlogList =(RecyclerView)view.findViewById(R.id.all_list);
+//        mBlogList.setHasFixedSize(true);
+//        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+//
+//        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
