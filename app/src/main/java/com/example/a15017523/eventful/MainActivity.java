@@ -1,10 +1,13 @@
 package com.example.a15017523.eventful;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,15 +27,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -91,20 +85,28 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_editprofile) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            Intent i = new Intent(MainActivity.this, editProfileActivity.class);
+            startActivity(i);
+        } else if (id == R.id.nav_logout) {
+            AlertDialog.Builder myBuilder = new AlertDialog.Builder(MainActivity.this);
 
-        } else if (id == R.id.nav_slideshow) {
+            myBuilder.setTitle("Log Out");
+            myBuilder.setMessage("Are you sure?");
+            myBuilder.setCancelable(false);
+            myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                  //Log out user from application and intent back to login page.
 
-        } else if (id == R.id.nav_manage) {
+                }
+            });
+            myBuilder.setNegativeButton("Cancel", null);
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            AlertDialog myDialog = myBuilder.create();
+            myDialog.show();
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
