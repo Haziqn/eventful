@@ -1,6 +1,7 @@
 package com.example.a15017523.eventful;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import static android.R.attr.fragment;
 
 
 /**
@@ -118,15 +121,15 @@ public class All extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all, container, false);
-//        View view = inflater.inflate(R.layout.fragment_all,
-//                container, false);
-//        mDatabase = FirebaseDatabase.getInstance().getReference().child("details");
-//        mBlogList =(RecyclerView)view.findViewById(R.id.all_list);
-//        mBlogList.setHasFixedSize(true);
-//        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-//
-//        return view;
+//        return inflater.inflate(R.layout.fragment_all, container, false);
+        View view = inflater.inflate(R.layout.fragment_all,
+                container, false);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("details");
+        mBlogList =(RecyclerView)view.findViewById(R.id.all_list);
+        mBlogList.setHasFixedSize(true);
+        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -167,4 +170,5 @@ public class All extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
