@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_editprofile) {
             // Handle the camera action
-            Intent i = new Intent(MainActivity.this, editProfileActivity.class);
+            Intent i = new Intent(MainActivity.this, EditProfileActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder myBuilder = new AlertDialog.Builder(MainActivity.this);

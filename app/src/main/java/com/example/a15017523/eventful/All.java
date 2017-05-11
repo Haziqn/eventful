@@ -76,23 +76,23 @@ public class All extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Events, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Events, BlogViewHolder>(
-
-                Events.class,
-                R.layout.row,
-                BlogViewHolder.class,
-                mDatabase
-
-        ) {
-            @Override
-            protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
-
-                viewHolder.setTitle(model.getTitle());
-                viewHolder.setDesc(model.getDesc());
-            }
-        };
-
-        mBlogList.setAdapter(firebaseRecyclerAdapter);
+//        FirebaseRecyclerAdapter<Events, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Events, BlogViewHolder>(
+//
+//                Events.class,
+//                R.layout.row,
+//                BlogViewHolder.class,
+//                mDatabase
+//
+//        ) {
+//            @Override
+//            protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
+//
+//                viewHolder.setTitle(model.getTitle());
+//                viewHolder.setDesc(model.getDesc());
+//            }
+//        };
+//
+//        mBlogList.setAdapter(firebaseRecyclerAdapter);
 
 
     }
