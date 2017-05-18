@@ -90,7 +90,7 @@ public class All extends Fragment {
             protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
 
                 viewHolder.setTitle(model.getTitle());
-                viewHolder.setDesc(model.getDesc());
+                viewHolder.setDesc(model.getDescription());
             }
         };
 
