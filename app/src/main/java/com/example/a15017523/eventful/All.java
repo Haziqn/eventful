@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import static android.R.attr.fragment;
+import static com.example.a15017523.eventful.R.layout.fragment_all;
 
 
 /**
@@ -66,6 +67,7 @@ public class All extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -76,23 +78,23 @@ public class All extends Fragment {
     public void onStart() {
         super.onStart();
 
-//        FirebaseRecyclerAdapter<Events, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Events, BlogViewHolder>(
-//
-//                Events.class,
-//                R.layout.row,
-//                BlogViewHolder.class,
-//                mDatabase
-//
-//        ) {
-//            @Override
-//            protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
-//
-//                viewHolder.setTitle(model.getTitle());
-//                viewHolder.setDesc(model.getDesc());
-//            }
-//        };
-//
-//        mBlogList.setAdapter(firebaseRecyclerAdapter);
+        FirebaseRecyclerAdapter<Events, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Events, BlogViewHolder>(
+
+                Events.class,
+                R.layout.row,
+                BlogViewHolder.class,
+                mDatabase
+
+        ) {
+            @Override
+            protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
+
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setDesc(model.getDesc());
+            }
+        };
+
+        mBlogList.setAdapter(firebaseRecyclerAdapter);
 
 
     }
@@ -102,7 +104,7 @@ public class All extends Fragment {
         View mView;
         public BlogViewHolder(View itemView) {
             super(itemView);
-            mView = itemView;
+            mView=itemView;
 
         }
 
@@ -122,9 +124,9 @@ public class All extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_all, container, false);
-        View view = inflater.inflate(R.layout.fragment_all,
+        View view = inflater.inflate(fragment_all,
                 container, false);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("details");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
         mBlogList =(RecyclerView)view.findViewById(R.id.all_list);
         mBlogList.setHasFixedSize(true);
         mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));

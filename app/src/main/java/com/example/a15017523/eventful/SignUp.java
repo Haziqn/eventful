@@ -66,15 +66,16 @@ public class SignUp extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        String user_id = mAuth.getCurrentUser().getUid();
-                        DatabaseReference current_user_db = mDatabase.child(user_id);
-                        current_user_db.child("name").setValue(name);
+//                        String user_id = mAuth.getCurrentUser().getUid();
+//                        DatabaseReference current_user_db = mDatabase.child(user_id);
+//                        current_user_db.child("name").setValue(name);
                         mProgress.dismiss();
 
                         Intent intent =  new Intent(SignUp.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     } else {
+                        mProgress.dismiss();
                         Toast.makeText(SignUp.this, "error signing up", Toast.LENGTH_SHORT).show();
                     }
                 }
