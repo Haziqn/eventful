@@ -55,9 +55,9 @@ public class SignUp extends AppCompatActivity {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String password2 = editTextConfirmPassword.getText().toString().trim();
-        Toast.makeText(SignUp.this, email + password, Toast.LENGTH_SHORT).show();
+        Toast.makeText(SignUp.this, email + " " + password, Toast.LENGTH_SHORT).show();
         if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(password2)) {
-            Toast.makeText(SignUp.this, "field validation works", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUp.this, "Field Validation Works", Toast.LENGTH_SHORT).show();
 
             mProgress.setMessage("Signing up ...");
             mProgress.show();
@@ -66,9 +66,9 @@ public class SignUp extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-//                        String user_id = mAuth.getCurrentUser().getUid();
-//                        DatabaseReference current_user_db = mDatabase.child(user_id);
-//                        current_user_db.child("name").setValue(name);
+                        String user_id = mAuth.getCurrentUser().getUid();
+                        DatabaseReference current_user_db = mDatabase.child(user_id);
+                        current_user_db.child("name").setValue(name);
                         mProgress.dismiss();
 
                         Intent intent =  new Intent(SignUp.this, MainActivity.class);
@@ -76,7 +76,7 @@ public class SignUp extends AppCompatActivity {
                         startActivity(intent);
                     } else {
                         mProgress.dismiss();
-                        Toast.makeText(SignUp.this, "error signing up", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this, task.getException() + "error signing up", Toast.LENGTH_LONG).show();
                     }
                 }
             });

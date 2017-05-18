@@ -10,6 +10,10 @@ public class Events {
     private String desc;
     private String image;
 
+    public Events() {
+
+    }
+
     public Events(String title, String desc, String image) {
         this.title = title;
         this.desc = desc;
