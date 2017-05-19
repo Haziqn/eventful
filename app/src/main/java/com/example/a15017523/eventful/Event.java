@@ -4,7 +4,7 @@ package com.example.a15017523.eventful;
  * Created by 15017523 on 7/5/2017.
  */
 
-public class Events {
+public class Event {
 
     private String title;
     private String description;
@@ -16,11 +16,11 @@ public class Events {
     private int pax;
     private String status;
 
-    public Events() {
+    public Event() {
 
     }
 
-    public Events(String title, String description, String image, String address, String datetime, String head_chief, String organiser, int pax, String status) {
+    public Event(String title, String description, String image, String address, String datetime, String head_chief, String organiser, int pax, String status) {
         this.title = title;
         this.description = description;
         this.image = image;

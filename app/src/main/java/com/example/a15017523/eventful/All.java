@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -73,38 +74,36 @@ public class All extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Events, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Events, BlogViewHolder>(
+        FirebaseRecyclerAdapter<Event, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, BlogViewHolder>(
 
-                Events.class,
+                Event.class,
                 R.layout.row,
                 BlogViewHolder.class,
                 mDatabase
-
         ) {
             @Override
-            protected void populateViewHolder(BlogViewHolder viewHolder, Events model, int position) {
+            protected void populateViewHolder(BlogViewHolder viewHolder, Event model, int position) {
 
-                viewHolder.setTitle(model.getTitle());
-                viewHolder.setDesc(model.getDescription());
+                viewHolder.setTitle("title");
+                viewHolder.setDesc("desc");
+
+//                Toast.makeText(getActivity().getApplicationContext(), model.getTitle(), Toast.LENGTH_LONG).show();
             }
+
         };
 
         mBlogList.setAdapter(firebaseRecyclerAdapter);
-
-
     }
-
-    public static class BlogViewHolder extends RecyclerView.ViewHolder{
+    public static class BlogViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
         public BlogViewHolder(View itemView) {
             super(itemView);
-            mView=itemView;
+            mView = itemView;
 
         }
 
@@ -117,13 +116,21 @@ public class All extends Fragment {
             TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
             post_desc.setText(desc);
         }
-    }
 
+//        public String getTitle(String title) {
+//            TextView post_title = (TextView)mView.findViewById(R.id.title_);
+//            return title;
+//        }
+//
+//        public String getDesc(String desc) {
+//            TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
+//            return desc;
+//        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_all, container, false);
+
         View view = inflater.inflate(fragment_all,
                 container, false);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
