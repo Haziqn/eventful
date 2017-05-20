@@ -4,16 +4,25 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import static android.R.attr.fragment;
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -28,6 +37,7 @@ public class Home extends Fragment {
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
     public static int int_items = 2;
+    FirebaseAuth mAuth;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,6 +60,7 @@ public class Home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mAuth = FirebaseAuth.getInstance();
         // Inflate the layout for this fragment
         View x =  inflater.inflate(R.layout.fragment_home,null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);

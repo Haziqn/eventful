@@ -16,11 +16,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.firebase.client.core.Tag;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -169,6 +171,9 @@ public class SignUp extends AppCompatActivity {
 
                              }
                          });
+
+                         final FirebaseUser user = mAuth.getCurrentUser();
+                         user.sendEmailVerification();
 
                          mProgress.dismiss();
 
