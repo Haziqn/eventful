@@ -1,7 +1,6 @@
 package com.example.a15017523.eventful;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,13 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import static android.R.attr.fragment;
 import static com.example.a15017523.eventful.R.layout.fragment_all;
 
 
@@ -78,20 +75,24 @@ public class All extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Event, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, BlogViewHolder>(
+        FirebaseRecyclerAdapter<EVENT, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EVENT, BlogViewHolder>(
 
-                Event.class,
+                EVENT.class,
                 R.layout.row,
                 BlogViewHolder.class,
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(BlogViewHolder viewHolder, Event model, int position) {
+            protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, int position) {
 
                 viewHolder.setTitle("title");
-                viewHolder.setDesc("desc");
-
-//                Toast.makeText(getActivity().getApplicationContext(), model.getTitle(), Toast.LENGTH_LONG).show();
+                viewHolder.setDesc("description");
+                viewHolder.setAddress(model.getAddress());
+                viewHolder.setDate(model.getDate());
+                viewHolder.setTime(model.getTime());
+                viewHolder.setOrganiser(model.getOrganiser());
+                viewHolder.setHeadChief(model.getHead_chief());
+                viewHolder.setPax(model.getPax());
             }
 
         };
@@ -113,19 +114,40 @@ public class All extends Fragment {
         }
 
         public void setDesc(String desc) {
-            TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
-            post_desc.setText(desc);
+            TextView postDesc = (TextView)mView.findViewById(R.id.desc_);
+            postDesc.setText(desc);
         }
 
-//        public String getTitle(String title) {
-//            TextView post_title = (TextView)mView.findViewById(R.id.title_);
-//            return title;
-//        }
-//
-//        public String getDesc(String desc) {
-//            TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
-//            return desc;
-//        }
+        public void setAddress(String address) {
+            TextView postAddress = (TextView)mView.findViewById(R.id.address_);
+            postAddress.setText(address);
+        }
+
+        public void setDate(String date) {
+            TextView postDate = (TextView)mView.findViewById(R.id.date_);
+            postDate.setText(date);
+        }
+
+        public void setTime(String time) {
+            TextView postTime = (TextView)mView.findViewById(R.id.time_);
+            postTime.setText(time);
+        }
+
+        public void setOrganiser(String organiser) {
+            TextView postOrganiser = (TextView)mView.findViewById(R.id.organiser_);
+            postOrganiser.setText(organiser);
+        }
+
+        public void setHeadChief(String headChief) {
+            TextView postHeadChief = (TextView)mView.findViewById(R.id.head_chief);
+            postHeadChief.setText(headChief);
+        }
+
+        public void setPax(String Pax) {
+            TextView postPax = (TextView)mView.findViewById(R.id.pax_);
+            postPax.setText(Pax);
+        }
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,9 +156,12 @@ public class All extends Fragment {
         View view = inflater.inflate(fragment_all,
                 container, false);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
         mBlogList =(RecyclerView)view.findViewById(R.id.all_list);
         mBlogList.setHasFixedSize(true);
-        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
+        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
 
         return view;
     }

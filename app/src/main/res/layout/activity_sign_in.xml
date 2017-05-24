@@ -7,33 +7,35 @@
     tools:context="com.example.a15017523.eventful.SignIn">
 
     <EditText
-        android:id="@+id/etEmail"
+        android:id="@+id/etEmailLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:hint="valid email only"
         android:inputType="textEmailAddress"
+        app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="70dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/etPw"
+        android:id="@+id/etPwLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="7dp"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:hint="password"
         android:inputType="textPassword"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmailLogin" />
 
     <Button
         android:id="@+id/btnLogin"

@@ -12,20 +12,64 @@
             android:id="@+id/title_"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.25"
             android:padding="15dp"
             android:text="Post title goes here"
             android:textSize="16dp"
-            android:visibility="visible" />
+             />
 
         <TextView
             android:id="@+id/desc_"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.25"
             android:paddingBottom="15dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:text="Post description goes here"
-            android:visibility="visible" />
+            />
+
+        <TextView
+            android:id="@+id/address_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/date_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/time_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/organiser_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/head_chief"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/pax_"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

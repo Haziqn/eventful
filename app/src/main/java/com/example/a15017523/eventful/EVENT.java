@@ -4,28 +4,30 @@ package com.example.a15017523.eventful;
  * Created by 15017523 on 7/5/2017.
  */
 
-public class Event {
+public class EVENT {
 
     private String title;
     private String description;
-    private String image;
+        private String image;
     private String address;
-    private String datetime;
+    private String date;
+    private String time;
     private String head_chief;
     private String organiser;
-    private int pax;
+    private String pax;
     private String status;
 
-    public Event() {
+    public EVENT() {
 
     }
 
-    public Event(String title, String description, String image, String address, String datetime, String head_chief, String organiser, int pax, String status) {
+    public EVENT(String title, String description, String image, String address, String date, String time, String head_chief, String organiser, String pax, String status) {
         this.title = title;
         this.description = description;
         this.image = image;
         this.address = address;
-        this.datetime = datetime;
+        this.date = date;
+        this.time = time;
         this.head_chief = head_chief;
         this.organiser = organiser;
         this.pax = pax;
@@ -64,12 +66,20 @@ public class Event {
         this.address = address;
     }
 
-    public String getDatetime() {
-        return datetime;
+    public String getDate() {
+        return date;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getHead_chief() {
@@ -88,11 +98,11 @@ public class Event {
         this.organiser = organiser;
     }
 
-    public int getPax() {
+    public String getPax() {
         return pax;
     }
 
-    public void setPax(int pax) {
+    public void setPax(String pax) {
         this.pax = pax;
     }
 
