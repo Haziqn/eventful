@@ -1,15 +1,19 @@
 package com.example.a15017523.eventful;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -39,6 +43,7 @@ public class All extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RecyclerView mBlogList;
     private DatabaseReference mDatabase;
+    FirebaseRecyclerAdapter firebaseRecyclerAdapter;
 
     public All() {
         // Required empty public constructor
@@ -75,7 +80,9 @@ public class All extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<EVENT, BlogViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EVENT, BlogViewHolder>(
+
+
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EVENT, BlogViewHolder>(
 
                 EVENT.class,
                 R.layout.row,
@@ -83,7 +90,7 @@ public class All extends Fragment {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, int position) {
+            protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
 
                 viewHolder.setTitle("title");
                 viewHolder.setDesc("description");
@@ -93,6 +100,36 @@ public class All extends Fragment {
                 viewHolder.setOrganiser(model.getOrganiser());
                 viewHolder.setHeadChief(model.getHead_chief());
                 viewHolder.setPax(model.getPax());
+
+                viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        AlertDialog.Builder myBuilder = new AlertDialog.Builder(getContext());
+
+                        myBuilder.setTitle("Delete Event");
+                        myBuilder.setMessage("Do you want to delete this event?");
+                        myBuilder.setCancelable(false);
+                        myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                firebaseRecyclerAdapter.getRef(position).removeValue();
+                            }
+                        });
+                        myBuilder.setNegativeButton("Cancel", null);
+
+                        AlertDialog myDialog = myBuilder.create();
+                        myDialog.show();
+                        return true;
+                    }
+                });
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        firebaseRecyclerAdapter.getRef(position);
+
+                    }
+                });
             }
 
         };
@@ -147,6 +184,8 @@ public class All extends Fragment {
             TextView postPax = (TextView)mView.findViewById(R.id.pax_);
             postPax.setText(Pax);
         }
+
+
 
     }
     @Override

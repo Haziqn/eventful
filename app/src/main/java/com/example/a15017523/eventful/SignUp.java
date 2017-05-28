@@ -136,7 +136,6 @@ public class SignUp extends AppCompatActivity {
                          } catch (Exception e) {
                              Toast.makeText(SignUp.this, "AES encryption error", Toast.LENGTH_LONG).show();
                          }
-
 //                         // Decode the encoded data with AES
 //                         byte[] decodedBytes = null;
 //                         try {
@@ -174,6 +173,8 @@ public class SignUp extends AppCompatActivity {
                          mProgress.dismiss();
 
                          Intent intent = new Intent(SignUp.this, MainActivity.class);
+                         intent.putExtra("email", email);
+                         intent.putExtra("username", name);
                          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          startActivity(intent);
                      } else {

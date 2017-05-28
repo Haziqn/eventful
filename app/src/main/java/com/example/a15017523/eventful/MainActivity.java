@@ -48,6 +48,12 @@ public class MainActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
+        Intent userIntent = getIntent();
+        String email = userIntent.getStringExtra("email");
+        String username = userIntent.getStringExtra("username");
+
+        Toast.makeText(MainActivity.this, email, Toast.LENGTH_LONG).show();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -57,20 +63,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        View header = navigationView.getHeaderView(0);
-//        TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
-//        TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
-//        ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
-//
-//        PARTICIPANT participant = new PARTICIPANT();
-//        final FirebaseUser user = mAuth.getCurrentUser();
-//        String username = participant.getUser_name().toString().trim();
-//        textViewUsername.setText("haziq");
-//        textViewUserEmail.setText("haziqnahar20@gmail.com");
-//        String image = participant.getImage().toString().trim();
-//        Picasso.with(MainActivity.this).load(image).into(imageViewUserDP);
-//
-//        Toast.makeText(MainActivity.this, user.getEmail() + user.getDisplayName(), Toast.LENGTH_LONG).show();
+        View header = navigationView.getHeaderView(0);
+        TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
+        TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
+        ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
+
+        textViewUserEmail.setText(email);
+        textViewUsername.setText(username);
+
         //replace the activity_main with Home(fragment) layout
         Home home = new Home();
         FragmentManager manager = getSupportFragmentManager();
