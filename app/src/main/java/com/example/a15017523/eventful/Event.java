@@ -10,26 +10,29 @@ public class Event {
     private String description;
     private String image;
     private String address;
-    private String datetime;
     private String head_chief;
-    private String organiser;
-    private int pax;
+    private String pax;
     private String status;
+    private String organiser;
+    private String date;
+    private String time;
+
 
     public Event() {
 
     }
 
-    public Event(String title, String description, String image, String address, String datetime, String head_chief, String organiser, int pax, String status) {
+    public Event(String title, String description, String image, String address, String head_chief, String pax, String status, String organiser, String date, String time) {
         this.title = title;
         this.description = description;
         this.image = image;
         this.address = address;
-        this.datetime = datetime;
         this.head_chief = head_chief;
-        this.organiser = organiser;
         this.pax = pax;
         this.status = status;
+        this.organiser = organiser;
+        this.date = date;
+        this.time = time;
     }
 
     public String getTitle() {
@@ -64,20 +67,28 @@ public class Event {
         this.address = address;
     }
 
-    public String getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
-    }
-
     public String getHead_chief() {
         return head_chief;
     }
 
     public void setHead_chief(String head_chief) {
         this.head_chief = head_chief;
+    }
+
+    public String getPax() {
+        return pax;
+    }
+
+    public void setPax(String pax) {
+        this.pax = pax;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getOrganiser() {
@@ -88,19 +99,19 @@ public class Event {
         this.organiser = organiser;
     }
 
-    public int getPax() {
-        return pax;
+    public String getDate() {
+        return date;
     }
 
-    public void setPax(int pax) {
-        this.pax = pax;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getStatus() {
-        return status;
+    public String getTime() {
+        return time;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setTime(String time) {
+        this.time = time;
     }
 }

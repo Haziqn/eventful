@@ -96,7 +96,7 @@ public class SignUp extends AppCompatActivity {
         buttonSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignUp.this, MainActivity.class);
+                Intent intent = new Intent(SignUp.this, GuestMainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

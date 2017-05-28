@@ -1,13 +1,11 @@
 package com.example.a15017523.eventful;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,13 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
+public class GuestMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, All.OnFragmentInteractionListener, MyEvents.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_guest_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -37,11 +35,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //replace the activity_main with Home(fragment) layout
         Home home = new Home();
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(
-                R.id.content_main,
+                R.id.content_guest_main,
                 home,
                 home.getTag()
         ).commit();
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.guest_main, menu);
         return true;
     }
 
@@ -85,27 +82,14 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_editprofile) {
-            Intent i = new Intent(MainActivity.this, EditProfileActivity.class);
+        if (id == R.id.nav_register) {
+            Intent i = new Intent(GuestMainActivity.this, SignUp.class);
             startActivity(i);
-        } else if (id == R.id.nav_logout) {
-            AlertDialog.Builder myBuilder = new AlertDialog.Builder(MainActivity.this);
-
-            myBuilder.setTitle("Log Out");
-            myBuilder.setMessage("Are you sure?");
-            myBuilder.setCancelable(false);
-            myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                  //Log out user from application and intent back to login page.
-
-                }
-            });
-            myBuilder.setNegativeButton("Cancel", null);
-
-            AlertDialog myDialog = myBuilder.create();
-            myDialog.show();
+        } else if (id == R.id.nav_signin) {
+            Intent i = new Intent(GuestMainActivity.this, SignIn.class);
+            startActivity(i);
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -115,4 +99,5 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
 }

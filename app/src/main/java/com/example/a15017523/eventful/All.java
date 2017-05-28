@@ -74,6 +74,7 @@ public class All extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -88,8 +89,8 @@ public class All extends Fragment {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, Event model, int position) {
 
-                viewHolder.setTitle("title");
-                viewHolder.setDesc("desc");
+                  viewHolder.setTitle("title");
+                  viewHolder.setDesc("desc");
 
 //                Toast.makeText(getActivity().getApplicationContext(), model.getTitle(), Toast.LENGTH_LONG).show();
             }
@@ -98,6 +99,7 @@ public class All extends Fragment {
 
         mBlogList.setAdapter(firebaseRecyclerAdapter);
     }
+
     public static class BlogViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
@@ -116,22 +118,13 @@ public class All extends Fragment {
             TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
             post_desc.setText(desc);
         }
-
-//        public String getTitle(String title) {
-//            TextView post_title = (TextView)mView.findViewById(R.id.title_);
-//            return title;
-//        }
-//
-//        public String getDesc(String desc) {
-//            TextView post_desc = (TextView)mView.findViewById(R.id.desc_);
-//            return desc;
-//        }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(fragment_all,
+        View view = inflater.inflate(R.layout.fragment_all,
                 container, false);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
         mBlogList =(RecyclerView)view.findViewById(R.id.all_list);
