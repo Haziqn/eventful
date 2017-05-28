@@ -92,8 +92,8 @@ public class All extends Fragment {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
 
-                viewHolder.setTitle("title");
-                viewHolder.setDesc("description");
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setDesc(model.getDescription());
                 viewHolder.setAddress(model.getAddress());
                 viewHolder.setDate(model.getDate());
                 viewHolder.setTime(model.getTime());
