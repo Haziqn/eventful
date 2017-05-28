@@ -13,10 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.firebase.client.core.Tag;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -28,8 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import org.w3c.dom.Text;
 
 import java.security.SecureRandom;
 
@@ -62,8 +58,8 @@ public class SignUp extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
 
         editTextName = (EditText) findViewById(R.id.etName);
-        editTextEmail = (EditText) findViewById(R.id.etEmail);
-        editTextPassword = (EditText) findViewById(R.id.etPw);
+        editTextEmail = (EditText) findViewById(R.id.etEmailLogin);
+        editTextPassword = (EditText) findViewById(R.id.etPwLogin);
         editTextConfirmPassword = (EditText) findViewById(R.id.etCPw);
         imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
         buttonSignUp = (Button) findViewById(R.id.btnSignUp);
@@ -140,7 +136,6 @@ public class SignUp extends AppCompatActivity {
                          } catch (Exception e) {
                              Toast.makeText(SignUp.this, "AES encryption error", Toast.LENGTH_LONG).show();
                          }
-
 //                         // Decode the encoded data with AES
 //                         byte[] decodedBytes = null;
 //                         try {
@@ -178,11 +173,14 @@ public class SignUp extends AppCompatActivity {
                          mProgress.dismiss();
 
                          Intent intent = new Intent(SignUp.this, MainActivity.class);
+                         intent.putExtra("email", email);
+                         intent.putExtra("username", name);
                          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          startActivity(intent);
                      } else {
                          mProgress.dismiss();
-                         Toast.makeText(SignUp.this, task.getException() + "", Toast.LENGTH_LONG).show();
+                         Log.e("ERROR", task.getException().toString());
+//                         Toast.makeText(SignUp.this, task.getException() + "", Toast.LENGTH_LONG).show();
                      }
                 }
             });

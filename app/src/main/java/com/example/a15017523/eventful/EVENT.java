@@ -4,7 +4,7 @@ package com.example.a15017523.eventful;
  * Created by 15017523 on 7/5/2017.
  */
 
-public class Event {
+public class EVENT {
 
     private String title;
     private String description;
@@ -18,21 +18,21 @@ public class Event {
     private String time;
 
 
-    public Event() {
+    public EVENT() {
 
     }
 
-    public Event(String title, String description, String image, String address, String head_chief, String pax, String status, String organiser, String date, String time) {
+    public EVENT(String title, String description, String image, String address, String date, String time, String head_chief, String organiser, String pax, String status) {
         this.title = title;
         this.description = description;
         this.image = image;
         this.address = address;
+        this.date = date;
+        this.time = time;
         this.head_chief = head_chief;
         this.pax = pax;
         this.status = status;
         this.organiser = organiser;
-        this.date = date;
-        this.time = time;
     }
 
     public String getTitle() {
@@ -67,6 +67,22 @@ public class Event {
         this.address = address;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getHead_chief() {
         return head_chief;
     }
@@ -99,19 +115,4 @@ public class Event {
         this.organiser = organiser;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 }
