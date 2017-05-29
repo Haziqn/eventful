@@ -57,6 +57,8 @@ public class SignUp extends AppCompatActivity {
 
         mProgress = new ProgressDialog(this);
 
+
+
         editTextName = (EditText) findViewById(R.id.etName);
         editTextEmail = (EditText) findViewById(R.id.etEmailLogin);
         editTextPassword = (EditText) findViewById(R.id.etPwLogin);

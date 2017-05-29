@@ -102,28 +102,6 @@ public class All extends Fragment {
                 viewHolder.setHeadChief(model.getHead_chief());
                 viewHolder.setPax(model.getPax());
 
-                viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        AlertDialog.Builder myBuilder = new AlertDialog.Builder(getContext());
-
-                        myBuilder.setTitle("Delete Event");
-                        myBuilder.setMessage("Do you want to delete this event?");
-                        myBuilder.setCancelable(false);
-                        myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                firebaseRecyclerAdapter.getRef(position).removeValue();
-                            }
-                        });
-                        myBuilder.setNegativeButton("Cancel", null);
-
-                        AlertDialog myDialog = myBuilder.create();
-                        myDialog.show();
-                        return true;
-                    }
-                });
-
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
