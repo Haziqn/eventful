@@ -3,6 +3,7 @@ package com.example.a15017523.eventful;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import static com.example.a15017523.eventful.R.layout.fragment_all;
@@ -103,7 +107,37 @@ public class All extends Fragment {
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        firebaseRecyclerAdapter.getRef(position);
+                        final String[] itemArray = {""};
+                        final Intent i = new Intent(getContext(), ViewEventDetails.class);
+                        String itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
+                        i.putExtra("key", itemKey);
+                        DatabaseReference itemTitle = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("title");
+                        DatabaseReference itemAddress = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("address");
+                        DatabaseReference itemDate = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("date");
+                        DatabaseReference itemDesc = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("description");
+                        DatabaseReference itemHead = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("head_chief");
+                        DatabaseReference itemImage = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("image");
+                        DatabaseReference itemOrganiser = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("organiser");
+                        DatabaseReference itemPax = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("pax");
+                        DatabaseReference itemStatus = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("status");
+                        DatabaseReference itemTime = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("time");
+
+                        itemTitle.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                 itemArray[0] = dataSnapshot.getValue(String.class);
+                                 i.putExtra("title", itemArray[0]);
+                                 Toast.makeText(getContext(), itemArray[0], Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        startActivity(i);
+
 
                     }
                 });
