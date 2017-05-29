@@ -103,6 +103,7 @@ public class All extends Fragment {
                 viewHolder.setTitle(model.getTitle());
                 viewHolder.setDesc(model.getDescription());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setTimeStamp(model.getTimeStamp());
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -171,6 +172,11 @@ public class All extends Fragment {
         public void setImage(Context ctx, String image) {
             ImageView post_Image = (ImageView)mView.findViewById(R.id.post_Image);
             Picasso.with(ctx).load(image).into(post_Image);
+        }
+
+        public void setTimeStamp(String timeStamp) {
+            TextView post_ts = (TextView)mView.findViewById(R.id.post_TS);
+            post_ts.setText(timeStamp);
         }
     }
 
