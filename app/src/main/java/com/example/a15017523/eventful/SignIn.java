@@ -6,10 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,6 +20,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.SecureRandom;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.SecretKeySpec;
+
 public class SignIn extends AppCompatActivity {
 
     EditText editTextEmail, editTextPassword;
@@ -25,6 +33,7 @@ public class SignIn extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ProgressDialog progressDialog;
     DatabaseReference databaseReference;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +41,14 @@ public class SignIn extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
+        mAuth = FirebaseAuth.getInstance();
 
-
-        editTextPassword = (EditText)findViewById(R.id.etEmailLogin);
-        editTextEmail = (EditText)findViewById(R.id.etPwLogin);
+        editTextPassword = (EditText)findViewById(R.id.etPwLogin);
+        editTextEmail = (EditText)findViewById(R.id.etEmailLogin);
         buttonLogin = (Button)findViewById(R.id.btnLogin);
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
+
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,21 +72,9 @@ public class SignIn extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+
                         progressDialog.dismiss();
-
-                        // Decode the encoded data with AES
-//                         byte[] decodedBytes = null;
-//                         try {
-//                             Cipher c = Cipher.getInstance("AES");
-//                             c.init(Cipher.DECRYPT_MODE, sks);
-//                             decodedBytes = c.doFinal(encodedBytes);
-//                         } catch (Exception e) {
-//                             Toast.makeText(SignUp.this, "AES decryption error", Toast.LENGTH_LONG).show();
-//                         }
-//                         tvdecoded.setText("[DECODED]:\n" + new String(decodedBytes) + "\n");
-
                         Intent intent = new Intent(SignIn.this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     } else {
                         Log.e("ERROR", task.getException().toString());

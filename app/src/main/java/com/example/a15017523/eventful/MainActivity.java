@@ -48,12 +48,6 @@ public class MainActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
-        Intent userIntent = getIntent();
-        String email = userIntent.getStringExtra("email");
-        String username = userIntent.getStringExtra("username");
-
-        Toast.makeText(MainActivity.this, email, Toast.LENGTH_LONG).show();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -67,6 +61,9 @@ public class MainActivity extends AppCompatActivity
         TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
         TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
         ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
+        final FirebaseUser user = mAuth.getCurrentUser();
+        String email = user.getEmail().toString();
+        String username = user.getDisplayName().toString();
 
         textViewUserEmail.setText(email);
         textViewUsername.setText(username);

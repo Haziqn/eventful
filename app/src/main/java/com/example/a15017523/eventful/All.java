@@ -1,5 +1,6 @@
 package com.example.a15017523.eventful;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -12,12 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import static com.example.a15017523.eventful.R.layout.fragment_all;
 
@@ -95,12 +98,7 @@ public class All extends Fragment {
 
                 viewHolder.setTitle(model.getTitle());
                 viewHolder.setDesc(model.getDescription());
-                viewHolder.setAddress(model.getAddress());
-                viewHolder.setDate(model.getDate());
-                viewHolder.setTime(model.getTime());
-                viewHolder.setOrganiser(model.getOrganiser());
-                viewHolder.setHeadChief(model.getHead_chief());
-                viewHolder.setPax(model.getPax());
+                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
 
                 viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -141,6 +139,7 @@ public class All extends Fragment {
     public static class BlogViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
+
         public BlogViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -148,43 +147,18 @@ public class All extends Fragment {
         }
 
         public void setTitle(String title) {
-            TextView postTitle = (TextView)mView.findViewById(R.id.title_);
+            TextView postTitle = (TextView)mView.findViewById(R.id.post_Title);
             postTitle.setText(title);
         }
 
         public void setDesc(String desc) {
-            TextView postDesc = (TextView)mView.findViewById(R.id.desc_);
-            postDesc.setText(desc);
+            TextView post_desc = (TextView)mView.findViewById(R.id.post_Desc);
+            post_desc.setText(desc);
         }
 
-        public void setAddress(String address) {
-            TextView postAddress = (TextView)mView.findViewById(R.id.address_);
-            postAddress.setText(address);
-        }
-
-        public void setDate(String date) {
-            TextView postDate = (TextView)mView.findViewById(R.id.date_);
-            postDate.setText(date);
-        }
-
-        public void setTime(String time) {
-            TextView postTime = (TextView)mView.findViewById(R.id.time_);
-            postTime.setText(time);
-        }
-
-        public void setOrganiser(String organiser) {
-            TextView postOrganiser = (TextView)mView.findViewById(R.id.organiser_);
-            postOrganiser.setText(organiser);
-        }
-
-        public void setHeadChief(String headChief) {
-            TextView postHeadChief = (TextView)mView.findViewById(R.id.head_chief);
-            postHeadChief.setText(headChief);
-        }
-
-        public void setPax(String Pax) {
-            TextView postPax = (TextView)mView.findViewById(R.id.pax_);
-            postPax.setText(Pax);
+        public void setImage(Context ctx, String image) {
+            ImageView post_Image = (ImageView)mView.findViewById(R.id.post_Image);
+            Picasso.with(ctx).load(image).into(post_Image);
         }
     }
 

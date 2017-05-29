@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,10 +40,13 @@ public class SignUp extends AppCompatActivity {
     Button buttonSignUp, buttonSignIn, buttonSkip;
     ImageButton imageButton;
 
+    String TAG = "SignUp.java";
+
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     StorageReference Storage;
     private Uri uri = null;
+    public String downloadUrl = "";
     final int GALLERY_REQUEST = 1;
     ProgressDialog mProgress;
 
@@ -105,7 +109,12 @@ public class SignUp extends AppCompatActivity {
         final String password = editTextPassword.getText().toString().trim();
         final String password2 = editTextConfirmPassword.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(password2) && password.equalsIgnoreCase(password2) && uri != null) {
+        if (!TextUtils.isEmpty(name) &&
+                !TextUtils.isEmpty(email) &&
+                !TextUtils.isEmpty(password) &&
+                !TextUtils.isEmpty(password2) &&
+                password.equalsIgnoreCase(password2) &&
+                uri != null) {
 
             mProgress.setMessage("Signing up ...");
             mProgress.show();
@@ -124,7 +133,7 @@ public class SignUp extends AppCompatActivity {
                              kg.init(128, sr);
                              sks = new SecretKeySpec((kg.generateKey()).getEncoded(), "AES");
                          } catch (Exception e) {
-                             Toast.makeText(SignUp.this, "AES secret key spec error", Toast.LENGTH_LONG).show();
+                             Log.e(TAG, "AES secret key spec error");
                          }
 
                          // Encode the original data with AES
@@ -134,7 +143,7 @@ public class SignUp extends AppCompatActivity {
                              c.init(Cipher.ENCRYPT_MODE, sks);
                              encodedBytes = c.doFinal(password.getBytes());
                          } catch (Exception e) {
-                             Toast.makeText(SignUp.this, "AES encryption error", Toast.LENGTH_LONG).show();
+                             Log.e(TAG, "AES encryption error");
                          }
 //                         // Decode the encoded data with AES
 //                         byte[] decodedBytes = null;
@@ -159,9 +168,8 @@ public class SignUp extends AppCompatActivity {
                          filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                              @Override
                              public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                 Toast.makeText(SignUp.this, downloadUrl.toString(), Toast.LENGTH_LONG).show();
-                                 current_user_db.child("image").setValue(downloadUrl.toString());
+                                 downloadUrl = taskSnapshot.getDownloadUrl().toString();
+                                 current_user_db.child("image").setValue(downloadUrl);
                                  finish();
 
                              }
@@ -170,17 +178,33 @@ public class SignUp extends AppCompatActivity {
                          final FirebaseUser user = mAuth.getCurrentUser();
                          user.sendEmailVerification();
 
+                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                 .setDisplayName(name + "")
+                                 .setPhotoUri(Uri.parse(downloadUrl))
+                                 .build();
+
+                         user.updateProfile(profileUpdates)
+                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                     @Override
+                                     public void onComplete(@NonNull Task<Void> task) {
+                                         if (task.isSuccessful()) {
+                                             Log.d(TAG, "User profile updated.");
+                                             Log.d("User name", user.getDisplayName());
+                                             Log.d("User photo", user.getPhotoUrl().toString());
+                                         } else {
+                                             Log.e("ERROR", task.getException().toString());
+                                         }
+                                     }
+                                 });
+
                          mProgress.dismiss();
 
                          Intent intent = new Intent(SignUp.this, MainActivity.class);
-                         intent.putExtra("email", email);
-                         intent.putExtra("username", name);
                          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                          startActivity(intent);
                      } else {
                          mProgress.dismiss();
                          Log.e("ERROR", task.getException().toString());
-//                         Toast.makeText(SignUp.this, task.getException() + "", Toast.LENGTH_LONG).show();
                      }
                 }
             });
