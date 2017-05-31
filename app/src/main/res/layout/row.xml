@@ -18,14 +18,16 @@
             android:layout_height="307dp"
             android:id="@+id/post_Image"
             app:srcCompat="@drawable/default_event" />
+
         <TextView
+            android:id="@+id/post_Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/post_Title"
-            android:text="Post title goes here"
             android:padding="15dp"
+            android:text="Post title goes here"
             android:textSize="16dp"
             android:textStyle="bold" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +41,9 @@
             android:id="@+id/post_TS"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:text="Post timestamp goes here" />
     </LinearLayout>
 

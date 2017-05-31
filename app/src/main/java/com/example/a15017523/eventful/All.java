@@ -54,6 +54,7 @@ public class All extends Fragment {
     private RecyclerView mBlogList;
     private DatabaseReference mDatabase;
     FirebaseRecyclerAdapter firebaseRecyclerAdapter;
+    String itemKey;
 
 
     public All() {
@@ -111,34 +112,10 @@ public class All extends Fragment {
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        final String[] itemArray = {""};
-                        final Intent i = new Intent(getContext(), ViewEventDetails.class);
-                        String itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
+                        Intent i = new Intent(getContext(), ViewEventDetails.class);
+                        itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
                         i.putExtra("key", itemKey);
-                        DatabaseReference itemTitle = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("title");
-                        DatabaseReference itemAddress = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("address");
-                        DatabaseReference itemDate = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("date");
-                        DatabaseReference itemDesc = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("description");
-                        DatabaseReference itemHead = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("head_chief");
-                        DatabaseReference itemImage = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("image");
-                        DatabaseReference itemOrganiser = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("organiser");
-                        DatabaseReference itemPax = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("pax");
-                        DatabaseReference itemStatus = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("status");
-                        DatabaseReference itemTime = FirebaseDatabase.getInstance().getReference().child("EVENT").child(itemKey).child("time");
 
-                        itemTitle.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                 itemArray[0] = dataSnapshot.getValue(String.class);
-                                 i.putExtra("title", itemArray[0]);
-                                 Toast.makeText(getContext(), itemArray[0], Toast.LENGTH_LONG).show();
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
 
                         startActivity(i);
 
