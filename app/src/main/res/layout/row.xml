@@ -18,16 +18,14 @@
             android:layout_height="307dp"
             android:id="@+id/post_Image"
             app:srcCompat="@drawable/default_event" />
-
         <TextView
-            android:id="@+id/post_Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:id="@+id/post_Title"
             android:text="Post title goes here"
+            android:padding="15dp"
             android:textSize="16dp"
             android:textStyle="bold" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
