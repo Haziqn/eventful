@@ -14,8 +14,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".SignIn" />
         <activity android:name=".SignUp">
@@ -25,7 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GuestMainActivity" android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".eventActivity"></activity>
+        <activity
+            android:name=".GuestMainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".eventActivity" />
+        <activity android:name=".UserAccount"></activity>
     </application>
+
 </manifest>

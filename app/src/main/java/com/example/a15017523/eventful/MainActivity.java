@@ -63,11 +63,19 @@ public class MainActivity extends AppCompatActivity
         ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
         String email = user.getEmail().toString();
+
 //        String username = user.getDisplayName().toString();
 
         textViewUserEmail.setText(email);
 //        textViewUsername.setText(username);
 
+        header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
         //replace the activity_main with Home(fragment) layout
         Home home = new Home();
         FragmentManager manager = getSupportFragmentManager();

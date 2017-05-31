@@ -1,0 +1,206 @@
+package com.example.a15017523.eventful;
+
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import static com.example.a15017523.eventful.SignIn.MY_PREFS_NAME;
+
+public class UserAccount extends AppCompatActivity {
+
+    EditText editName, editEmail, editPassword;
+    Button buttonUpdate, buttonDelete, buttonResetPassword;
+    ImageButton imageButton;
+
+    FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
+    StorageReference Storage;
+    private Uri uri = null;
+    public String downloadUrl = "";
+    final int GALLERY_REQUEST = 1;
+    ProgressDialog mProgress;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user_account);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
+        Storage = FirebaseStorage.getInstance().getReference();
+
+        mProgress = new ProgressDialog(this);
+
+        editName = (EditText) findViewById(R.id.etName);
+        editEmail = (EditText) findViewById(R.id.etEmailLogin);
+        editPassword = (EditText) findViewById(R.id.etPwLogin);
+        imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
+        buttonUpdate = (Button) findViewById(R.id.btnUpdate);
+        buttonDelete = (Button) findViewById(R.id.btnDelete);
+        buttonResetPassword = (Button) findViewById(R.id.btnResetPw);
+
+        editPassword.setClickable(false);
+
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final String uid = user.getUid();
+
+        DatabaseReference mDatabaseRef = mDatabase.child(uid);
+
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                PARTICIPANT participant = dataSnapshot.getValue(PARTICIPANT.class);
+                String email = participant.getEmail().toString().trim();
+                String username = participant.getUser_name().toString().trim();
+                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+                String password = prefs.getString("password", "");
+                String image = participant.getImage().toString().trim();
+
+                editEmail.setText(email);
+                editName.setText(username);
+                editPassword.setText(password);
+                Picasso.with(UserAccount.this).load(image).into(imageButton);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(UserAccount.this, "Clicked", Toast.LENGTH_SHORT).show();
+                updateUserInfo();
+            }
+        });
+
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userDelete();
+            }
+        });
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
+            }
+        });
+
+        buttonResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.sendPasswordResetEmail(user.getEmail());
+            }
+        });
+    }
+
+    public void updateUserInfo() {
+        Toast.makeText(UserAccount.this, "in update", Toast.LENGTH_SHORT).show();
+        final String email = editEmail.getText().toString();
+        final String username = editName.getText().toString();
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final String uid = user.getUid();
+
+        if (uri != null) {
+            user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("UpdateAccount", "User email address updated.");
+                        mDatabase.child(uid).child("email").setValue(email);
+                        mDatabase.child(uid).child("user_name").setValue(username);
+
+                        StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
+
+                        filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                downloadUrl = taskSnapshot.getDownloadUrl().toString();
+                                mDatabase.child(uid).child("image").setValue(downloadUrl);
+                                finish();
+
+                            }
+                        });
+                        Intent intent = new Intent(UserAccount.this, SignIn.class);
+                        startActivity(intent);
+                        Toast.makeText(UserAccount.this, "Please sign in again", Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.e("Update", task.getException().toString());
+                    }
+                }
+            });
+        }
+    }
+
+    public void userDelete() {
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final String uid = user.getUid();
+                        user.delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            mDatabase.child(uid).removeValue();
+                                            Intent intent = new Intent(UserAccount.this, SignUp.class);
+                                            startActivity(intent);
+                                            Log.d("userDelete", "User account deleted.");
+                                        }
+                                    }
+                                });
+                    }
+
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+
+            uri = data.getData();
+
+            imageButton.setImageURI(uri);
+        }
+    }
+}

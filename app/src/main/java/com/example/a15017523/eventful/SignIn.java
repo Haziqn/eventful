@@ -2,6 +2,7 @@ package com.example.a15017523.eventful;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ public class SignIn extends AppCompatActivity {
     ProgressDialog progressDialog;
     DatabaseReference databaseReference;
     FirebaseAuth mAuth;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,10 @@ public class SignIn extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+
+                        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                        editor.putString("password", password);
+                        editor.commit();
 
                         progressDialog.dismiss();
                         Intent intent = new Intent(SignIn.this, MainActivity.class);

@@ -70,7 +70,7 @@ public class SignUp extends AppCompatActivity {
         imageButton = (ImageButton) findViewById(R.id.imageButtonUser);
         buttonSignUp = (Button) findViewById(R.id.btnSignUp);
         buttonSignIn = (Button) findViewById(R.id.btnSignIn);
-        buttonSkip = (Button) findViewById(R.id.btnSkip);
+        buttonSkip = (Button) findViewById(R.id.btnDelete);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +80,7 @@ public class SignUp extends AppCompatActivity {
                 startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
+
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
