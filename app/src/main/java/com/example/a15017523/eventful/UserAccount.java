@@ -89,12 +89,12 @@ public class UserAccount extends AppCompatActivity {
                 String username = participant.getUser_name().toString().trim();
                 SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
                 String password = prefs.getString("password", "");
-                String image = participant.getImage().toString().trim();
+//                String image = participant.getImage().toString().trim();
 
                 editEmail.setText(email);
                 editName.setText(username);
                 editPassword.setText(password);
-                Picasso.with(UserAccount.this).load(image).into(imageButton);
+//                Picasso.with(UserAccount.this).load(image).into(imageButton);
 
             }
 
@@ -115,7 +115,26 @@ public class UserAccount extends AppCompatActivity {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userDelete();
+                AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
+
+                myBuilder.setTitle("Delete Account");
+                myBuilder.setMessage("Are you sure?");
+                myBuilder.setCancelable(false);
+                myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        userDelete();
+                        Intent i = new Intent(UserAccount.this, SignUp.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+
+                    }
+                });
+                myBuilder.setNegativeButton("Cancel", null);
+
+                AlertDialog myDialog = myBuilder.create();
+                myDialog.show();
+
             }
         });
 
@@ -131,7 +150,22 @@ public class UserAccount extends AppCompatActivity {
         buttonResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.sendPasswordResetEmail(user.getEmail());
+                AlertDialog.Builder myBuilder = new AlertDialog.Builder(UserAccount.this);
+
+                myBuilder.setTitle("Reset Password");
+                myBuilder.setMessage("A reset password email will be sent to you");
+                myBuilder.setCancelable(false);
+                myBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAuth.sendPasswordResetEmail(user.getEmail());
+                    }
+                });
+                myBuilder.setNegativeButton("Cancel", null);
+
+                AlertDialog myDialog = myBuilder.create();
+                myDialog.show();
+
             }
         });
     }
