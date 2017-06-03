@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +55,8 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        getSupportActionBar().setTitle("Eventful - Sign In");
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
@@ -225,4 +228,5 @@ public class SignUp extends AppCompatActivity {
             imageButton.setImageURI(uri);
         }
     }
+
 }

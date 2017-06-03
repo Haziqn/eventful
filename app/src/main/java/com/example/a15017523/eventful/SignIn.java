@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +43,10 @@ public class SignIn extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setTitle("Eventful - Sign In");
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
         mAuth = FirebaseAuth.getInstance();
@@ -90,5 +95,15 @@ public class SignIn extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
