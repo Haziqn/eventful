@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -55,13 +56,15 @@ public class ViewEventDetails extends AppCompatActivity {
                 String date = event.getDate().toString().trim();
                 String time = event.getTime().toString().trim();
                 String timestamp = event.getTimeStamp().toString().trim();
+                String organiser_name = event.getOrganiser_name().toString().trim();
 
                 tvDate.setText("Date: " + date);
                 tvTime.setText("Time: " + time);
                 tvDesc.setText(description);
-                tvOrganiser.setText("Organiser: " + organiser);
+                tvOrganiser.setText("Organiser: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText("Location: " + "\n" + address);
+                Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
