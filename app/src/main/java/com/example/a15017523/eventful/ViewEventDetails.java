@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -55,13 +58,15 @@ public class ViewEventDetails extends AppCompatActivity {
                 String date = event.getDate().toString().trim();
                 String time = event.getTime().toString().trim();
                 String timestamp = event.getTimeStamp().toString().trim();
+                String organiser_name = event.getOrganiser_name().toString().trim();
 
                 tvDate.setText("Date: " + date);
                 tvTime.setText("Time: " + time);
                 tvDesc.setText(description);
-                tvOrganiser.setText("Organiser: " + organiser);
+                tvOrganiser.setText("Organiser: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText("Location: " + "\n" + address);
+                Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -77,4 +82,32 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_share) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
