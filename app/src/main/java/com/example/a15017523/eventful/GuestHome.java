@@ -28,20 +28,19 @@ import static android.content.ContentValues.TAG;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Home.OnFragmentInteractionListener} interface
+ * {@link GuestHome.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
+ * Use the {@link GuestHome#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Home extends Fragment {
+public class GuestHome extends Fragment {
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 2;
-    FirebaseAuth mAuth;
+    public static int int_items = 1;
 
     private OnFragmentInteractionListener mListener;
 
-    public Home() {}
+    public GuestHome() {}
 
     public static Home newInstance() {
         Home fragment = new Home();
@@ -60,9 +59,8 @@ public class Home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mAuth = FirebaseAuth.getInstance();
         // Inflate the layout for this fragment
-        View x =  inflater.inflate(R.layout.fragment_home,null);
+        View x =  inflater.inflate(R.layout.fragment_guest_home,null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
@@ -74,7 +72,7 @@ public class Home extends Fragment {
             }
         });
 
-        getActivity().setTitle("Events");
+        getActivity().setTitle("Events (Guest)");
 
         return x;
     }
@@ -90,7 +88,6 @@ public class Home extends Fragment {
         {
             switch (position){
                 case 0 : return new All();
-                case 1 : return new MyEvents();
             }
             return null;
         }
@@ -108,8 +105,6 @@ public class Home extends Fragment {
             switch (position){
                 case 0 :
                     return "All";
-                case 1 :
-                    return "My Events";
             }
             return null;
         }

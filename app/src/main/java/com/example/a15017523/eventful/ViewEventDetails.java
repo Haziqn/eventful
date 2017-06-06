@@ -25,6 +25,8 @@ public class ViewEventDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event_details);
 
+        setTitle("Event Details");
+
         tvDesc = (TextView)findViewById(R.id.tvDescription);
         tvDate = (TextView)findViewById(R.id.tvDate);
         tvTime = (TextView)findViewById(R.id.tvTime);

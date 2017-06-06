@@ -43,6 +43,8 @@ public class SignIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        setTitle("Login");
+
         databaseReference = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
         mAuth = FirebaseAuth.getInstance();
 
