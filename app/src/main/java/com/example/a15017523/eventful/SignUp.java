@@ -57,7 +57,6 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         setTitle("Register");
-        getSupportActionBar().setTitle("Eventful - Sign Up");
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");

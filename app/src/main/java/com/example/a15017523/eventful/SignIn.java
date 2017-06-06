@@ -47,8 +47,6 @@ public class SignIn extends AppCompatActivity {
         setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle("Eventful - Sign In");
-
         databaseReference = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
         mAuth = FirebaseAuth.getInstance();
 

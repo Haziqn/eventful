@@ -83,11 +83,11 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/tvRegister"
+                android:id="@+id/btnRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorAccent"
-                android:text="Register For Event"
+                android:text="Register for this event"
                 android:textColor="@color/cardview_light_background" />
 
         </LinearLayout>

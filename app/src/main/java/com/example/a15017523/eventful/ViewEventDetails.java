@@ -1,14 +1,19 @@
 package com.example.a15017523.eventful;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +27,7 @@ public class ViewEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief;
     ImageView imageView;
+    Button btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,7 @@ public class ViewEventDetails extends AppCompatActivity {
         tvHeadChief = (TextView)findViewById(R.id.tvHeadChief);
         imageView = (ImageView)findViewById(R.id.imageView2);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
+        btnRegister = (Button)findViewById(R.id.btnRegister);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
 
@@ -79,6 +86,27 @@ public class ViewEventDetails extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
+
+                myBuilder.setTitle("Confirm Registration");
+                myBuilder.setMessage("An email will be sent to you upon confirmation of event registration");
+                myBuilder.setCancelable(false);
+                myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                myBuilder.setNegativeButton("Cancel", null);
+
+                AlertDialog myDialog = myBuilder.create();
+                myDialog.show();
             }
         });
     }
