@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -100,6 +101,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(ViewEventDetails.this, "Registration successful", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 });
