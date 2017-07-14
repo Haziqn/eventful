@@ -64,16 +64,44 @@ public class MainActivity extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
         TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
+        TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
         ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            String displayName = user.getDisplayName();
+            Uri profileUri = user.getPhotoUrl();
 
-        String email = user.getEmail().toString();
+            // If the above were null, iterate the provider data
+            // and set with the first non null data
+            for (UserInfo userInfo : user.getProviderData()) {
+                if (displayName == null && userInfo.getDisplayName() != null) {
+                    displayName = userInfo.getDisplayName();
+                }
+                if (profileUri == null && userInfo.getPhotoUrl() != null) {
+                    profileUri = userInfo.getPhotoUrl();
+                }
+            }
 
+            textViewUsername.setText(displayName);
+            textViewUserEmail.setText(user.getEmail());
+            if (profileUri != null) {
+                Picasso.with(getBaseContext()).load(profileUri).into(imageViewUserDP);
+            }
+        }
+
+//        String email = user.getEmail().toString();
+//
 //        String username = user.getDisplayName().toString();
-
-        textViewUserEmail.setText(email);
-
+//
+//        String photoUrl = user.getPhotoUrl().toString().trim();
+//        Picasso.with(getBaseContext()).load(photoUrl).into(imageViewUserDP);
+//
+//        textViewUserEmail.setText(email);
+//
 //        textViewUsername.setText(username);
+
+
 
         header.setOnClickListener(new View.OnClickListener() {
             @Override
