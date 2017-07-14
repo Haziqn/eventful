@@ -196,7 +196,7 @@ public class SignUp extends AppCompatActivity {
                                          if (task.isSuccessful()) {
                                              Log.d(TAG, "User profile updated.");
                                              Log.d("User name", user.getDisplayName());
-                                             Log.d("User photo", user.getPhotoUrl().toString());
+//                                             Log.d("User photo", user.getPhotoUrl().toString());
                                          } else {
                                              Log.e("ERROR", task.getException().toString());
                                          }

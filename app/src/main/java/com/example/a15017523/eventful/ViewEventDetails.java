@@ -3,6 +3,8 @@ package com.example.a15017523.eventful;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +31,7 @@ public class ViewEventDetails extends AppCompatActivity {
     TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief;
     ImageView imageView;
     Button btnRegister;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,8 @@ public class ViewEventDetails extends AppCompatActivity {
         btnRegister = (Button)findViewById(R.id.btnRegister);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        DatabaseReference mDatabaseEventP = FirebaseDatabase.getInstance().getReference().child("EVENT_PARTICIPANTS");
+        mAuth = FirebaseAuth.getInstance();
 
         Intent i = getIntent();
         String itemKey = i.getStringExtra("key");
@@ -79,8 +85,6 @@ public class ViewEventDetails extends AppCompatActivity {
 
                 getSupportActionBar().setTitle(title);
 
-
-
             }
 
             @Override
@@ -89,24 +93,34 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
+        final DatabaseReference mDatabaseRefEventP = mDatabaseEventP.child(itemKey);
+        final String user_id = mAuth.getCurrentUser().getUid();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
+                Toast.makeText(ViewEventDetails.this, user_id, Toast.LENGTH_LONG).show();
+                if (user_id != "") {
+                    final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
 
-                myBuilder.setTitle("Confirm Registration");
-                myBuilder.setMessage("An email will be sent to you upon confirmation of event registration");
-                myBuilder.setCancelable(false);
-                myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                myBuilder.setNegativeButton("Cancel", null);
+                    myBuilder.setTitle("Confirm Registration");
+                    myBuilder.setMessage("Register for event?");
+                    myBuilder.setCancelable(false);
+                    myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mDatabaseRefEventP.child(user_id).setValue("Unassigned");
+                            Toast.makeText(ViewEventDetails.this, "Registration success!", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
+                    });
+                    myBuilder.setNegativeButton("Cancel", null);
 
-                AlertDialog myDialog = myBuilder.create();
-                myDialog.show();
+                    AlertDialog myDialog = myBuilder.create();
+                    myDialog.show();
+                } else {
+                    Toast.makeText(ViewEventDetails.this, "You need to be logged in to register for events!", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
