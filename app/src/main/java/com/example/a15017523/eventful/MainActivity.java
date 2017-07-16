@@ -4,11 +4,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,29 +19,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firebase.client.Firebase;
-import com.firebase.client.core.Context;
-import com.firebase.client.core.view.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import static android.R.attr.name;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, All.OnFragmentInteractionListener, MyEvents.OnFragmentInteractionListener {
 
     FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    String displayName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,43 +58,39 @@ public class MainActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
         TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
-        ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
+        final ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
+        if (user == null) {
+            startActivity(new Intent(this, SignUp.class));
+            finish();
+            return;
+        } else {
             // User is signed in
-            String displayName = user.getDisplayName();
-            Uri profileUri = user.getPhotoUrl();
+            displayName = user.getDisplayName();
 
-            // If the above were null, iterate the provider data
-            // and set with the first non null data
-            for (UserInfo userInfo : user.getProviderData()) {
-                if (displayName == null && userInfo.getDisplayName() != null) {
-                    displayName = userInfo.getDisplayName();
-                }
-                if (profileUri == null && userInfo.getPhotoUrl() != null) {
-                    profileUri = userInfo.getPhotoUrl();
-                }
+            if (user.getPhotoUrl() == null) {
+                StorageReference storageReference = FirebaseStorage.getInstance()
+                        .getReferenceFromUrl(user.getPhotoUrl().toString().trim());
+                storageReference.getDownloadUrl().addOnCompleteListener(
+                        new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+                                    String downloadUrl = task.getResult().toString();
+                                    Picasso.with(getBaseContext()).load(downloadUrl).into(imageViewUserDP);
+                                } else {
+                                    Log.w("Main", "Getting download url was not successful.",
+                                            task.getException());
+                                }
+                            }
+                        });
+            } else {
+                Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
             }
 
             textViewUsername.setText(displayName);
             textViewUserEmail.setText(user.getEmail());
-            if (profileUri != null) {
-                Picasso.with(getBaseContext()).load(profileUri).into(imageViewUserDP);
-            }
         }
-
-//        String email = user.getEmail().toString();
-//
-//        String username = user.getDisplayName().toString();
-//
-//        String photoUrl = user.getPhotoUrl().toString().trim();
-//        Picasso.with(getBaseContext()).load(photoUrl).into(imageViewUserDP);
-//
-//        textViewUserEmail.setText(email);
-//
-//        textViewUsername.setText(username);
-
-
 
         header.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     FirebaseAuth.getInstance().signOut();
-                    Intent i = new Intent(MainActivity.this, SignIn.class);
+                    Intent i = new Intent(MainActivity.this, SignUp.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
 
