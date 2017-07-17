@@ -1,12 +1,22 @@
 package com.example.a15017523.eventful;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -28,6 +38,10 @@ public class MyEvents extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private RecyclerView mBlogList;
+    private DatabaseReference mDatabase, mMyevents;
+    FirebaseRecyclerAdapter firebaseRecyclerAdapter;
+    String itemKey;
 
     public MyEvents() {
         // Required empty public constructor
@@ -54,6 +68,7 @@ public class MyEvents extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -61,10 +76,94 @@ public class MyEvents extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EVENT, MyEvents.BlogViewHolder>(
+
+                EVENT.class,
+                R.layout.row,
+                MyEvents.BlogViewHolder.class,
+                mDatabase
+        ) {
+
+            @Override
+            protected void populateViewHolder(MyEvents.BlogViewHolder viewHolder, EVENT model, final int position) {
+
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setDesc(model.getDescription());
+                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setTimeStamp(model.getTimeStamp());
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(getContext(), ViewEventDetails.class);
+                        itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
+                        i.putExtra("key", itemKey);
+
+
+                        startActivity(i);
+
+
+                    }
+                });
+            }
+
+        };
+
+        mBlogList.setAdapter(firebaseRecyclerAdapter);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
+        mBlogList.setLayoutManager(mLayoutManager);
+    }
+
+    public static class BlogViewHolder extends RecyclerView.ViewHolder {
+
+        View mView;
+
+        public BlogViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+
+        }
+
+        public void setTitle(String title) {
+            TextView postTitle = (TextView)mView.findViewById(R.id.post_Title);
+            postTitle.setText(title);
+        }
+
+        public void setDesc(String desc) {
+            TextView post_desc = (TextView)mView.findViewById(R.id.post_Desc);
+            post_desc.setText(desc);
+        }
+
+        public void setImage(Context ctx, String image) {
+            ImageView post_Image = (ImageView)mView.findViewById(R.id.post_Image);
+            Picasso.with(ctx).load(image).into(post_Image);
+        }
+
+        public void setTimeStamp(String timeStamp) {
+            TextView post_ts = (TextView)mView.findViewById(R.id.post_TS);
+            post_ts.setText(timeStamp);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_events, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_my_events,
+                container, false);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        mBlogList =(RecyclerView)view.findViewById(R.id.myevents_list);
+        mBlogList.setHasFixedSize(true);
+        mBlogList.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -77,8 +176,8 @@ public class MyEvents extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof MyEvents.OnFragmentInteractionListener) {
+            mListener = (MyEvents.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
