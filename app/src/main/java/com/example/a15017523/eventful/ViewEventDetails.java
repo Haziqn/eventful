@@ -2,9 +2,12 @@ package com.example.a15017523.eventful;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +41,7 @@ public class ViewEventDetails extends AppCompatActivity {
     ImageView imageView;
     Button btnRegister;
     FirebaseAuth mAuth;
+    private GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,10 @@ public class ViewEventDetails extends AppCompatActivity {
         setContentView(R.layout.activity_view_event_details);
 
         setTitle("Event Details");
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
 
         tvDesc = (TextView)findViewById(R.id.tvDescription);
         tvDate = (TextView)findViewById(R.id.tvDate);
@@ -64,7 +78,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 String title = event.getTitle().toString().trim();
                 String description = event.getDescription().toString().trim();
                 String image = event.getImage().toString().trim();
-                String address = event.getAddress().toString().trim();
+                final String address = event.getAddress().toString().trim();
                 String head_chief = event.getHead_chief().toString().trim();
                 String pax = event.getPax().toString().trim();
                 String organiser = event.getOrganiser().toString().trim();
@@ -72,6 +86,8 @@ public class ViewEventDetails extends AppCompatActivity {
                 String time = event.getTime().toString().trim();
                 String timestamp = event.getTimeStamp().toString().trim();
                 String organiser_name = event.getOrganiser_name().toString().trim();
+                final Double latitude = event.getLatitude();
+                final Double longitude = event.getLongitude();
 
                 tvDate.setText("Date: " + date);
                 tvTime.setText("Time: " + time);
@@ -80,6 +96,26 @@ public class ViewEventDetails extends AppCompatActivity {
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText("Location: " + "\n" + address);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
+
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        map = googleMap;
+
+                        int permissionCheck = ContextCompat.checkSelfPermission(ViewEventDetails.this,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+                        // Add a marker in Sydney and move the camera
+                        LatLng location = new LatLng(latitude, longitude);
+                        map.addMarker(new MarkerOptions().position(location).title(address));
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+                        if (ActivityCompat.checkSelfPermission(ViewEventDetails.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ViewEventDetails.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        map.setMyLocationEnabled(true);
+
+                    }
+                });
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
