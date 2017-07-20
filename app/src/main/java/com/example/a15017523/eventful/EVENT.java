@@ -18,6 +18,42 @@ public class EVENT {
     private String time;
     private String timeStamp;
     private String organiser_name;
+    private Double latitude;
+    private Double longitude;
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public EVENT(String title, String description, String image, String address, String head_chief, String pax, String status, String organiser, String date, String time, String timeStamp, String organiser_name, Double latitude, Double longitude) {
+        this.title = title;
+        this.description = description;
+        this.image = image;
+        this.address = address;
+        this.head_chief = head_chief;
+        this.pax = pax;
+        this.status = status;
+        this.organiser = organiser;
+        this.date = date;
+        this.time = time;
+        this.timeStamp = timeStamp;
+        this.organiser_name = organiser_name;
+
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     public EVENT() {
 
@@ -28,21 +64,6 @@ public class EVENT {
     }
 
     public void setOrganiser_name(String organiser_name) {
-        this.organiser_name = organiser_name;
-    }
-
-    public EVENT(String title, String description, String image, String address, String date, String time, String head_chief, String organiser, String pax, String status, String timeStamp, String organiser_name) {
-        this.title = title;
-        this.description = description;
-        this.image = image;
-        this.address = address;
-        this.date = date;
-        this.time = time;
-        this.head_chief = head_chief;
-        this.pax = pax;
-        this.status = status;
-        this.organiser = organiser;
-        this.timeStamp = timeStamp;
         this.organiser_name = organiser_name;
     }
 

@@ -128,6 +128,7 @@ public class All extends Fragment {
 
         mBlogList.setAdapter(firebaseRecyclerAdapter);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setStackFromEnd(true);
         mLayoutManager.setReverseLayout(true);
         mBlogList.setLayoutManager(mLayoutManager);
     }
