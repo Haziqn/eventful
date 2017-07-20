@@ -72,7 +72,8 @@ public class SignIn extends AppCompatActivity {
         final String password = editTextPassword.getText().toString().trim();
 
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
-            progressDialog.setMessage("Loading");
+            progressDialog.setTitle("Signing In");
+            progressDialog.setMessage("Please wait while we check your credentials!");
             progressDialog.show();
 
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

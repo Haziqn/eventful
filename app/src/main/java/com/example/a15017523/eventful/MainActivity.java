@@ -4,10 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,25 +15,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, All.OnFragmentInteractionListener, MyEvents.OnFragmentInteractionListener {
 
     FirebaseAuth mAuth;
-    String displayName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +42,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("PARTICIPANT");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -56,46 +54,48 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
-        TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
-        TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
-        final ImageView imageViewUserDP = (ImageView) header.findViewById(R.id.ivUserDP);
+        final TextView textViewUserEmail = (TextView) header.findViewById(R.id.tvDisplayEmail);
+        final TextView textViewUsername = (TextView) header.findViewById(R.id.tvDisplayUser);
+        final CircleImageView imageViewUserDP = (CircleImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
+
         if (user == null) {
-            startActivity(new Intent(this, SignUp.class));
+            startActivity(new Intent(this, StartActivity.class));
             finish();
             return;
         } else {
-            // User is signed in
-            displayName = user.getDisplayName();
 
             if (user.getPhotoUrl() == null) {
-                StorageReference storageReference = FirebaseStorage.getInstance()
-                        .getReferenceFromUrl(user.getPhotoUrl().toString().trim());
-                storageReference.getDownloadUrl().addOnCompleteListener(
-                        new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    String downloadUrl = task.getResult().toString();
-                                    Picasso.with(getBaseContext()).load(downloadUrl).into(imageViewUserDP);
-                                } else {
-                                    Log.w("Main", "Getting download url was not successful.",
-                                            task.getException());
-                                }
-                            }
-                        });
+                databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String user_name = dataSnapshot.child("user_name").getValue().toString();
+                        String email = dataSnapshot.child("email").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+
+                        textViewUserEmail.setText(email);
+                        textViewUsername.setText(user_name);
+                        Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             } else {
+                textViewUsername.setText(user.getDisplayName());
+                textViewUserEmail.setText(user.getEmail());
                 Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
             }
 
-            textViewUsername.setText(displayName);
-            textViewUserEmail.setText(user.getEmail());
         }
 
         header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, UserAccount.class);
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
             }
         });
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_editprofile) {
-            Intent i = new Intent(MainActivity.this, UserAccount.class);
+            Intent i = new Intent(MainActivity.this, EditProfile.class);
             startActivity(i);
         } else if (id == R.id.nav_logout) {
             AlertDialog.Builder myBuilder = new AlertDialog.Builder(MainActivity.this);
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     FirebaseAuth.getInstance().signOut();
-                    Intent i = new Intent(MainActivity.this, SignUp.class);
+                    Intent i = new Intent(MainActivity.this, StartActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
 

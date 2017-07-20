@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -17,6 +18,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -26,12 +28,15 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class GoogleSignIn extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
+import java.util.HashMap;
+
+public class StartActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private SignInButton signInButton;
+    private Button buttonSignIn, buttonSignUp, buttonSkip;
     private ProgressDialog progressDialog;
 
     private GoogleApiClient googleApiClient;
@@ -39,14 +44,42 @@ public class GoogleSignIn extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseUser firebaseUser;
     private String userName;
     private String photoUrl;
+    private String email;
     private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google_sign_in);
+        setContentView(R.layout.activity_start_activity);
+
+        buttonSignIn = (Button)findViewById(R.id.btnSignIn);
+        buttonSignUp = (Button)findViewById(R.id.btnSignUp);
+        buttonSkip = (Button)findViewById(R.id.btnSkip);
 
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        buttonSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StartActivity.this, GuestMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+        buttonSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StartActivity.this, SignIn.class);
+                startActivity(intent);
+            }
+        });
+        buttonSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StartActivity.this, SignUp.class);
+                startActivity(intent);
+            }
+        });
 
         signInButton.setOnClickListener(this);
 
@@ -62,7 +95,7 @@ public class GoogleSignIn extends AppCompatActivity implements GoogleApiClient.O
         // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("User");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
     }
 
     private void handleFirebaseAuthResult(AuthResult authResult) {
@@ -111,7 +144,8 @@ public class GoogleSignIn extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        progressDialog.setMessage("Signing up ...");
+        progressDialog.setTitle("Registering User");
+        progressDialog.setMessage("Please while we create your account!");
         progressDialog.show();
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -126,19 +160,31 @@ public class GoogleSignIn extends AppCompatActivity implements GoogleApiClient.O
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(GoogleSignIn.this, "Authentication failed.",
+                            Toast.makeText(StartActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             firebaseUser = firebaseAuth.getCurrentUser();
-                            userName= firebaseUser.getDisplayName();
-                            photoUrl= firebaseUser.getPhotoUrl().toString();
-                            String user_id = firebaseAuth.getCurrentUser().getUid();
-                            final DatabaseReference current_user = databaseReference.child(user_id);
-                            current_user.child("name").setValue(userName);
-                            current_user.child("photoUrl").setValue(photoUrl);
-                            startActivity(new Intent(GoogleSignIn.this, MainActivity.class));
-                            progressDialog.dismiss();
-                            finish();
+                            userName = firebaseUser.getDisplayName();
+                            photoUrl = firebaseUser.getPhotoUrl().toString();
+                            email = firebaseUser.getEmail();
+                            String user_id = firebaseUser.getUid();
+                            DatabaseReference current_user = databaseReference.child(user_id);
+                            HashMap<String, String> userMap = new HashMap<String, String>();
+                            userMap.put("image", photoUrl);
+                            userMap.put("user_name", userName);
+                            userMap.put("email", email);
+                            userMap.put("status", "active");
+                            current_user.setValue(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Intent intent = new Intent(StartActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    progressDialog.dismiss();
+                                    finish();
+                                }
+                            });
+
                         }
                     }
                 });
