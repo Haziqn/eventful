@@ -18,6 +18,7 @@ public class EVENT {
     private String time;
     private String timeStamp;
     private String organiser_name;
+    private String email;
     private Double latitude;
     private Double longitude;
 
@@ -37,7 +38,7 @@ public class EVENT {
         this.longitude = longitude;
     }
 
-    public EVENT(String title, String description, String image, String address, String head_chief, String pax, String status, String organiser, String date, String time, String timeStamp, String organiser_name, Double latitude, Double longitude) {
+    public EVENT(String title, String description, String image, String address, String head_chief, String pax, String status, String organiser, String date, String time, String timeStamp, String organiser_name, String email, Double latitude, Double longitude) {
         this.title = title;
         this.description = description;
         this.image = image;
@@ -50,7 +51,7 @@ public class EVENT {
         this.time = time;
         this.timeStamp = timeStamp;
         this.organiser_name = organiser_name;
-
+        this.email = email;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -155,5 +156,11 @@ public class EVENT {
         this.timeStamp = timeStamp;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

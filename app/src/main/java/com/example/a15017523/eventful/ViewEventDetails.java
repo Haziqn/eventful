@@ -1,5 +1,6 @@
 package com.example.a15017523.eventful;
 
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,11 +12,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +41,11 @@ import org.w3c.dom.Text;
 public class ViewEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief, tvTitle;
-    ImageView imageView;
+    ImageView imageView, imageEmail;
     Button btnRegister;
     FirebaseAuth mAuth;
     private GoogleMap map;
+    LinearLayout calender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +65,14 @@ public class ViewEventDetails extends AppCompatActivity {
         tvOrganiser = (TextView)findViewById(R.id.tvOrganiser);
         tvHeadChief = (TextView)findViewById(R.id.tvHeadChief);
         imageView = (ImageView)findViewById(R.id.imageView2);
+        imageEmail = (ImageView)findViewById(R.id.imageEmail);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
         btnRegister = (Button)findViewById(R.id.btnRegister);
+        calender = (LinearLayout)findViewById(R.id.calender);
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
         DatabaseReference mDatabaseEventP = FirebaseDatabase.getInstance().getReference().child("EVENT_PARTICIPANTS");
+        DatabaseReference mDatabaseEventO = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
         mAuth = FirebaseAuth.getInstance();
 
         Intent i = getIntent();
@@ -161,6 +168,26 @@ public class ViewEventDetails extends AppCompatActivity {
 
             }
         });
+
+        calender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                ComponentName cn = new ComponentName("com.google.android.calendar", "com.android.calendar.LaunchActivity");
+                i.setComponent(cn);
+                startActivity(i);
+            }
+        });
+
+        imageEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.setType("message/rfc822");
+                startActivity(Intent.createChooser(email,
+                        "Choose an Email client :"));
+            }
+        });
     }
 
     @Override
@@ -189,5 +216,4 @@ public class ViewEventDetails extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }
