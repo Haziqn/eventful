@@ -19,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextView textViewUsername, textViewEmail;
+    TextView textViewUsername, textViewEmail, textViewAge, textViewOccupation, textViewRace, textViewGender, textViewInterests;
     Button buttonShare;
     CircleImageView imageButton;
 
@@ -32,7 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_activity);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Profile");
 
@@ -42,6 +42,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         textViewEmail = (TextView) findViewById(R.id.tvEmail);
         textViewUsername = (TextView) findViewById(R.id.tvUsername);
+        textViewAge = (TextView) findViewById(R.id.tvAge);
+        textViewGender = (TextView) findViewById(R.id.tvGender);
+        textViewRace = (TextView) findViewById(R.id.tvRace);
+        textViewInterests = (TextView) findViewById(R.id.tvInterests);
+        textViewOccupation = (TextView) findViewById(R.id.tvOccupation);
+
         imageButton = (CircleImageView) findViewById(R.id.imageButtonUser);
         buttonShare = (Button) findViewById(R.id.btnShare);
 
@@ -56,10 +62,17 @@ public class ProfileActivity extends AppCompatActivity {
                 String user_name = dataSnapshot.child("user_name").getValue().toString();
                 String email = dataSnapshot.child("email").getValue().toString();
                 String image = dataSnapshot.child("image").getValue().toString();
-
+                String age = dataSnapshot.child("age").getValue().toString();
+//                String gender = dataSnapshot.child("gender").getValue().toString();
+                String occupation = dataSnapshot.child("occupation").getValue().toString();
+                String race = dataSnapshot.child("race").getValue().toString();
 
                 textViewEmail.setText(email);
                 textViewUsername.setText(user_name);
+//                textViewGender.setText(gender);
+                textViewRace.setText(race);
+                textViewOccupation.setText(occupation);
+                textViewAge.setText(age);
                 Picasso.with(getBaseContext()).load(image).into(imageButton);
 
             }

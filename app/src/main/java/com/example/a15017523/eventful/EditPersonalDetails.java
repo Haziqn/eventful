@@ -2,9 +2,11 @@ package com.example.a15017523.eventful;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,15 +28,12 @@ public class EditPersonalDetails extends AppCompatActivity {
 
     EditText editTextAge, editTextOccupation;
     Button buttonConfirm;
-    RadioGroup rg;
-    RadioButton rb;
     Spinner spinner;
     CheckBox soccer, programming, ml, singing, photography;
 
     String gender;
     String race;
-    String age;
-    String occupation;
+
     ProgressDialog mProgress;
 
     ArrayList<String> categories;
@@ -46,7 +45,6 @@ public class EditPersonalDetails extends AppCompatActivity {
 
         setTitle("Tell us More!");
 
-        final Intent intent = new Intent(this, SignUp.class);
         mProgress = new ProgressDialog(this);
         categories = new ArrayList<String>();
 
@@ -58,9 +56,11 @@ public class EditPersonalDetails extends AppCompatActivity {
 
         editTextAge = (EditText) findViewById(R.id.etAge);
         editTextOccupation = (EditText) findViewById(R.id.etOccupation);
-        rg = (RadioGroup) findViewById(R.id.rgGender);
+
+        RadioGroup rg = (RadioGroup) findViewById(R.id.rgGender);
         int selectedButtonId = rg.getCheckedRadioButtonId();
-        rb = (RadioButton) findViewById(selectedButtonId);
+        RadioButton rb = (RadioButton) findViewById(selectedButtonId);
+        gender = rb.getText().toString();
         spinner = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.race_array, android.R.layout.simple_spinner_item);
@@ -82,34 +82,30 @@ public class EditPersonalDetails extends AppCompatActivity {
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setResult(RESULT_OK);
+
+                mProgress.setTitle("Verifying inputs");
+                mProgress.setMessage("Checking");
+                mProgress.show();
+
+                String age = editTextAge.getText().toString();
+                String occupation = editTextOccupation.getText().toString();
+
+                if(field_verification(age, occupation, race, gender, categories)) {
+
+                    Intent intent = new Intent();
                     intent.putExtra("age", age);
                     intent.putExtra("occupation", occupation);
                     intent.putExtra("gender", gender);
                     intent.putExtra("race", race);
                     intent.putExtra("interests", categories);
-//                mProgress.setTitle("Verifying inputs");
-//                mProgress.setMessage("Checking");
-//                mProgress.show();
-//
-//                gender = rb.getText().toString();
-//                final String age = editTextAge.getText().toString();
-//                final String occupation = editTextOccupation.getText().toString();
-//
-//                if(field_verification(age, occupation, race, gender, categories)) {
-//                    intent.putExtra("age", age);
-//                    intent.putExtra("occupation", occupation);
-//                    intent.putExtra("gender", gender);
-//                    intent.putExtra("race", race);
-//                    intent.putExtra("interests", categories);
-//                    setResult(RESULT_OK);
-//                    mProgress.dismiss();
-//                } else {
-//                    mProgress.dismiss();
-//                    Toast.makeText(EditPersonalDetails.this, "One or more textfields is empty. Please, try again", Toast.LENGTH_SHORT).show();
-//                }
+
+                    setResult(RESULT_OK, intent);
+                    finish();
+
+                }
             }
         });
+
     }
 
     public void onCheckboxClicked(View view) {
@@ -163,10 +159,33 @@ public class EditPersonalDetails extends AppCompatActivity {
 
     private Boolean field_verification(String age, String occupation, String race, String gender, ArrayList<String> categories) {
         if (!TextUtils.isEmpty(age) &&
-                !TextUtils.isEmpty(occupation) &&
                 !TextUtils.isEmpty(race) &&
                 !TextUtils.isEmpty(gender) &&
+                !TextUtils.isEmpty(occupation) &&
                 categories != null) {
+            return true;
+        } else if (TextUtils.isEmpty(age)){
+            Log.d("field_verification", "age is empty");
+        } else if (TextUtils.isEmpty(occupation)){
+            Log.d("field_verification", "occupation is empty");
+        } else if (TextUtils.isEmpty(race)){
+            Log.d("field_verification", "race is empty");
+        } else if (TextUtils.isEmpty(gender)){
+            Log.d("field_verification", "gender is empty");
+        } else if (categories == null){
+            Log.d("field_verification", "cat is empty");
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+    private Boolean field_verification(String name, String email, String password, String password2, Uri uri) {
+        if (!TextUtils.isEmpty(name) &&
+                !TextUtils.isEmpty(email) &&
+                !TextUtils.isEmpty(password) &&
+                !TextUtils.isEmpty(password2) &&
+                password.equalsIgnoreCase(password2) && uri != null) {
             return true;
         } return false;
     }

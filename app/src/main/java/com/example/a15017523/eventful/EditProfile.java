@@ -39,7 +39,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {
-    Button buttonUpdate, buttonDelete, buttonResetPassword;
+    Button buttonUpdate, buttonDelete, buttonResetPassword, buttonResetEmail;
     EditText editName, editEmail;
     CircleImageView imageButton;
 
@@ -72,6 +72,7 @@ public class EditProfile extends AppCompatActivity {
         buttonUpdate = (Button)findViewById(R.id.btnUpdate);
         buttonDelete = (Button)findViewById(R.id.btnDelete);
         buttonResetPassword = (Button)findViewById(R.id.btnResetPw);
+//        buttonResetEmail = (Button)findViewById(R.id.btnResetEmail);
 
         editEmail = (EditText)findViewById(R.id.etEmailLogin);
         editName = (EditText)findViewById(R.id.etUserName);
@@ -108,6 +109,13 @@ public class EditProfile extends AppCompatActivity {
                 updateUserInfo();
             }
         });
+
+//        buttonResetEmail.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                resetUserEmail();
+//            }
+//        });
 
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -252,15 +260,13 @@ public class EditProfile extends AppCompatActivity {
 
     public void userDelete() {
         final FirebaseUser user = mAuth.getCurrentUser();
-        final String uid = user.getUid();
         user.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            mDatabase.child(uid).removeValue();
-                            Intent intent = new Intent(EditProfile.this, SignUp.class);
-                            startActivity(intent);
+
+                            Intent intent = new Intent(EditProfile.this, StartActivity.class);
                             Log.d("userDelete", "User account deleted.");
                         } else {
                             Toast.makeText(EditProfile.this, task.getException().toString(), Toast.LENGTH_LONG).show();

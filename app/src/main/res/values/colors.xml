@@ -3,4 +3,6 @@
     <color name="colorPrimary">#ff8800</color>
     <color name="colorPrimaryDark">#ff7700</color>
     <color name="colorAccent">#ff8800</color>
+    <color name="contentDividerLine">#e0e0e0</color>
+    <color name="purpleDark">#3e2d70</color>
 </resources>

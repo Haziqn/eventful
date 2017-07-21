@@ -119,8 +119,9 @@ public class SignUp extends AppCompatActivity {
                 password2 = editTextConfirmPassword.getText().toString().trim();
 
                 if (field_verification(name, email, password, password2, uri)) {
+                    mProgress.hide();
                     Intent intent = new Intent(SignUp.this, EditPersonalDetails.class);
-                    startActivityForResult(intent, 100);
+                    startActivityForResult(intent, 9);
                 } else if (uri == null) {
                     Toast.makeText(SignUp.this, "Please select an image", Toast.LENGTH_SHORT).show();
                 } else {
@@ -264,7 +265,7 @@ public class SignUp extends AppCompatActivity {
             race = data.getStringExtra("race").toString();
             occupation = data.getStringExtra("occupation").toString();
             gender = data.getStringExtra("gender").toString();
-            interests = data.getStringArrayListExtra("categories");
+            interests = data.getStringArrayListExtra("interests");
             participant1.setAge(age);
             participant1.setGender(gender);
             participant1.setRace(race);

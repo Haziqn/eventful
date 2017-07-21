@@ -59,6 +59,18 @@ public class MainActivity extends AppCompatActivity
         final CircleImageView imageViewUserDP = (CircleImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
 
+        databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         if (user == null) {
             startActivity(new Intent(this, StartActivity.class));
             finish();
