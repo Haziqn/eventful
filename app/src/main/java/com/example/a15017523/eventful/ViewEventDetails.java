@@ -37,7 +37,7 @@ import org.w3c.dom.Text;
 
 public class ViewEventDetails extends AppCompatActivity {
 
-    TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief;
+    TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief, tvTitle;
     ImageView imageView;
     Button btnRegister;
     FirebaseAuth mAuth;
@@ -54,6 +54,7 @@ public class ViewEventDetails extends AppCompatActivity {
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
+        tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvDesc = (TextView)findViewById(R.id.tvDescription);
         tvDate = (TextView)findViewById(R.id.tvDate);
         tvTime = (TextView)findViewById(R.id.tvTime);
@@ -89,12 +90,13 @@ public class ViewEventDetails extends AppCompatActivity {
                 final Double latitude = event.getLatitude();
                 final Double longitude = event.getLongitude();
 
-                tvDate.setText("Date: " + date);
-                tvTime.setText("Time: " + time);
+                tvTitle.setText(title);
+                tvDate.setText(date);
+                tvTime.setText(time);
                 tvDesc.setText(description);
-                tvOrganiser.setText("Organiser: " + organiser_name);
+                tvOrganiser.setText("by: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
-                tvAddress.setText("Location: " + "\n" + address);
+                tvAddress.setText("Location: " + address);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
