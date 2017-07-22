@@ -139,10 +139,7 @@ public class All extends Fragment {
                         Intent i = new Intent(getContext(), ViewEventDetails.class);
                         itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
                         i.putExtra("key", itemKey);
-
-
                         startActivity(i);
-
 
                     }
                 });

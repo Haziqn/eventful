@@ -41,11 +41,13 @@ import org.w3c.dom.Text;
 public class ViewEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief, tvTitle;
-    ImageView imageView, imageEmail;
+    ImageView imageView;
     Button btnRegister;
     FirebaseAuth mAuth;
     private GoogleMap map;
-    LinearLayout calender;
+    LinearLayout calender, profile;
+
+    String organiser_name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,23 +67,24 @@ public class ViewEventDetails extends AppCompatActivity {
         tvOrganiser = (TextView)findViewById(R.id.tvOrganiser);
         tvHeadChief = (TextView)findViewById(R.id.tvHeadChief);
         imageView = (ImageView)findViewById(R.id.imageView2);
-        imageEmail = (ImageView)findViewById(R.id.imageEmail);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
         btnRegister = (Button)findViewById(R.id.btnRegister);
         calender = (LinearLayout)findViewById(R.id.calender);
+        profile = (LinearLayout)findViewById(R.id.profile);
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
-        DatabaseReference mDatabaseEventP = FirebaseDatabase.getInstance().getReference().child("EVENT_PARTICIPANTS");
-        DatabaseReference mDatabaseEventO = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mDatabase = databaseReference.child("EVENT");
+        DatabaseReference mDatabaseEventP = databaseReference.child("EVENT_PARTICIPANTS");
         mAuth = FirebaseAuth.getInstance();
 
         Intent i = getIntent();
         String itemKey = i.getStringExtra("key");
 
-        DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
+        final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 EVENT event = dataSnapshot.getValue(EVENT.class);
                 String title = event.getTitle().toString().trim();
                 String description = event.getDescription().toString().trim();
@@ -89,11 +92,24 @@ public class ViewEventDetails extends AppCompatActivity {
                 final String address = event.getAddress().toString().trim();
                 String head_chief = event.getHead_chief().toString().trim();
                 String pax = event.getPax().toString().trim();
-                String organiser = event.getOrganiser().toString().trim();
+                final String organiser = event.getOrganiser().toString().trim();
+
+                DatabaseReference mOrganiser = databaseReference.child("ORGANISER").child(organiser);
+                mOrganiser.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 String date = event.getDate().toString().trim();
                 String time = event.getTime().toString().trim();
                 String timestamp = event.getTimeStamp().toString().trim();
-                String organiser_name = event.getOrganiser_name().toString().trim();
                 final Double latitude = event.getLatitude();
                 final Double longitude = event.getLongitude();
 
@@ -103,7 +119,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 tvDesc.setText(description);
                 tvOrganiser.setText("by: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
-                tvAddress.setText("Location: " + address);
+                tvAddress.setText(address);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -179,13 +195,11 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
-        imageEmail.setOnClickListener(new View.OnClickListener() {
+        profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent email = new Intent(Intent.ACTION_SEND);
-                email.setType("message/rfc822");
-                startActivity(Intent.createChooser(email,
-                        "Choose an Email client :"));
+                Intent profileIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                startActivity(profileIntent);
             }
         });
     }
