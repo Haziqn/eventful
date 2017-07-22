@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.a15017523.eventful.R.layout.fragment_all;
 
@@ -55,6 +58,8 @@ public class All extends Fragment {
     private DatabaseReference mDatabase;
     FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     String itemKey;
+
+    String organiser_name;
 
 
     public All() {
@@ -104,10 +109,29 @@ public class All extends Fragment {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
 
+                String uid = model.getOrganiser();
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+                databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
                 viewHolder.setTitle(model.getTitle());
-                viewHolder.setDesc(model.getDescription());
+                viewHolder.setOrganiser(organiser_name);
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setTimeStamp(model.getTimeStamp());
+                viewHolder.setDate(model.getDate());
+                viewHolder.setTime(model.getTime());
+                viewHolder.setAddress(model.getAddress());
+                viewHolder.setTickets(model.getPax());
+
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -144,24 +168,41 @@ public class All extends Fragment {
         }
 
         public void setTitle(String title) {
-            TextView postTitle = (TextView)mView.findViewById(R.id.post_Title);
-            postTitle.setText(title);
+            TextView textViewTitle = (TextView)mView.findViewById(R.id.eventTitle);
+            textViewTitle.setText(title);
         }
 
-        public void setDesc(String desc) {
-            TextView post_desc = (TextView)mView.findViewById(R.id.post_Desc);
-            post_desc.setText(desc);
+        public void setDate(String date) {
+            TextView textViewDate = (TextView)mView.findViewById(R.id.eventDate);
+            textViewDate.setText(date);
+        }
+
+        public void setTime(String time) {
+            TextView textViewTime = (TextView)mView.findViewById(R.id.eventTime);
+            textViewTime.setText(time);
+        }
+
+        public void setOrganiser(String organiser) {
+            TextView textViewOrganiser = (TextView)mView.findViewById(R.id.eventOrganiser);
+            textViewOrganiser.setText(organiser);
+        }
+
+        public void setTickets(String tickets) {
+
+            TextView textViewTickets = (TextView)mView.findViewById(R.id.eventTickets);
+            textViewTickets.setText(tickets);
+        }
+
+        public void setAddress(String address) {
+            TextView textViewAddress = (TextView)mView.findViewById(R.id.eventAddress);
+            textViewAddress.setText(address);
         }
 
         public void setImage(Context ctx, String image) {
-            ImageView post_Image = (ImageView)mView.findViewById(R.id.post_Image);
-            Picasso.with(ctx).load(image).into(post_Image);
+            CircleImageView imageView = (CircleImageView)mView.findViewById(R.id.event_image);
+            Picasso.with(ctx).load(image).into(imageView);
         }
 
-        public void setTimeStamp(String timeStamp) {
-            TextView post_ts = (TextView)mView.findViewById(R.id.post_TS);
-            post_ts.setText(timeStamp);
-        }
     }
 
     @Override

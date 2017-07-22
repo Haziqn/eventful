@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,9 +93,12 @@ public class MyEvents extends Fragment {
             protected void populateViewHolder(MyEvents.BlogViewHolder viewHolder, EVENT model, final int position) {
 
                 viewHolder.setTitle(model.getTitle());
-                viewHolder.setDesc(model.getDescription());
+                viewHolder.setOrganiser(model.getOrganiser());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setTimeStamp(model.getTimeStamp());
+                viewHolder.setDate(model.getDate());
+                viewHolder.setTime(model.getTime());
+                viewHolder.setAddress(model.getAddress());
+                viewHolder.setTickets(model.getPax());
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -130,24 +135,41 @@ public class MyEvents extends Fragment {
         }
 
         public void setTitle(String title) {
-            TextView postTitle = (TextView)mView.findViewById(R.id.post_Title);
-            postTitle.setText(title);
+            TextView textViewTitle = (TextView)mView.findViewById(R.id.eventTitle);
+            textViewTitle.setText(title);
         }
 
-        public void setDesc(String desc) {
-            TextView post_desc = (TextView)mView.findViewById(R.id.post_Desc);
-            post_desc.setText(desc);
+        public void setDate(String date) {
+            TextView textViewDate = (TextView)mView.findViewById(R.id.eventDate);
+            textViewDate.setText(date);
+        }
+
+        public void setTime(String time) {
+            TextView textViewTime = (TextView)mView.findViewById(R.id.eventTime);
+            textViewTime.setText(time);
+        }
+
+        public void setOrganiser(String organiser) {
+            TextView textViewOrganiser = (TextView)mView.findViewById(R.id.eventOrganiser);
+            textViewOrganiser.setText(organiser);
+        }
+
+        public void setTickets(String tickets) {
+
+            TextView textViewTickets = (TextView)mView.findViewById(R.id.eventTickets);
+            textViewTickets.setText(tickets);
+        }
+
+        public void setAddress(String address) {
+            TextView textViewAddress = (TextView)mView.findViewById(R.id.eventAddress);
+            textViewAddress.setText(address);
         }
 
         public void setImage(Context ctx, String image) {
-            ImageView post_Image = (ImageView)mView.findViewById(R.id.post_Image);
-            Picasso.with(ctx).load(image).into(post_Image);
+            CircleImageView imageView = (CircleImageView)mView.findViewById(R.id.event_image);
+            Picasso.with(ctx).load(image).into(imageView);
         }
 
-        public void setTimeStamp(String timeStamp) {
-            TextView post_ts = (TextView)mView.findViewById(R.id.post_TS);
-            post_ts.setText(timeStamp);
-        }
     }
 
     @Override

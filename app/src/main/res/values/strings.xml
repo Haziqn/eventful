@@ -8,13 +8,12 @@
     <string name="action_share">Share</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="buttonRegister">Register</string>
     <string name="btnRegister">Register</string>
     <string name="btnLogin">Login</string>
     <string name="title_activity_login">Login</string>
-    <string name="btnSignIn">Already have an account? Sign in here</string>
+    <string name="btnSignIn">Already have an account?</string>
     <string name="btnSkip">Skip</string>
-    <string name="sign_in">Sign In</string>
+    <string name="welcome">Welcome to Eventful</string>
     <string name="title_activity_guest_main">GuestMainActivity</string>
 </resources>
