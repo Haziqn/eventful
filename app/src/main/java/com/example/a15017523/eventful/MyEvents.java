@@ -92,13 +92,13 @@ public class MyEvents extends Fragment {
             @Override
             protected void populateViewHolder(MyEvents.BlogViewHolder viewHolder, EVENT model, final int position) {
 
-                viewHolder.setTitle(model.getTitle());
-                viewHolder.setOrganiser(model.getOrganiser());
-                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setDate(model.getDate());
-                viewHolder.setTime(model.getTime());
-                viewHolder.setAddress(model.getAddress());
-                viewHolder.setTickets(model.getPax());
+//                viewHolder.setTitle(model.getTitle());
+//                viewHolder.setOrganiser(model.getOrganiser());
+//                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+//                viewHolder.setDate(model.getDate());
+//                viewHolder.setTime(model.getTime());
+//                viewHolder.setAddress(model.getAddress());
+//                viewHolder.setTickets(model.getPax());
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -134,41 +134,41 @@ public class MyEvents extends Fragment {
 
         }
 
-        public void setTitle(String title) {
-            TextView textViewTitle = (TextView)mView.findViewById(R.id.eventTitle);
-            textViewTitle.setText(title);
-        }
-
-        public void setDate(String date) {
-            TextView textViewDate = (TextView)mView.findViewById(R.id.eventDate);
-            textViewDate.setText(date);
-        }
-
-        public void setTime(String time) {
-            TextView textViewTime = (TextView)mView.findViewById(R.id.eventTime);
-            textViewTime.setText(time);
-        }
-
-        public void setOrganiser(String organiser) {
-            TextView textViewOrganiser = (TextView)mView.findViewById(R.id.eventOrganiser);
-            textViewOrganiser.setText(organiser);
-        }
-
-        public void setTickets(String tickets) {
-
-            TextView textViewTickets = (TextView)mView.findViewById(R.id.eventTickets);
-            textViewTickets.setText(tickets);
-        }
-
-        public void setAddress(String address) {
-            TextView textViewAddress = (TextView)mView.findViewById(R.id.eventAddress);
-            textViewAddress.setText(address);
-        }
-
-        public void setImage(Context ctx, String image) {
-            CircleImageView imageView = (CircleImageView)mView.findViewById(R.id.event_image);
-            Picasso.with(ctx).load(image).into(imageView);
-        }
+//        public void setTitle(String title) {
+//            TextView textViewTitle = (TextView)mView.findViewById(R.id.eventTitle);
+//            textViewTitle.setText(title);
+//        }
+//
+//        public void setDate(String date) {
+//            TextView textViewDate = (TextView)mView.findViewById(R.id.eventDate);
+//            textViewDate.setText(date);
+//        }
+//
+//        public void setTime(String time) {
+//            TextView textViewTime = (TextView)mView.findViewById(R.id.eventTime);
+//            textViewTime.setText(time);
+//        }
+//
+//        public void setOrganiser(String organiser) {
+//            TextView textViewOrganiser = (TextView)mView.findViewById(R.id.eventOrganiser);
+//            textViewOrganiser.setText(organiser);
+//        }
+//
+//        public void setTickets(String tickets) {
+//
+//            TextView textViewTickets = (TextView)mView.findViewById(R.id.eventTickets);
+//            textViewTickets.setText(tickets);
+//        }
+//
+//        public void setAddress(String address) {
+//            TextView textViewAddress = (TextView)mView.findViewById(R.id.eventAddress);
+//            textViewAddress.setText(address);
+//        }
+//
+//        public void setImage(Context ctx, String image) {
+//            CircleImageView imageView = (CircleImageView)mView.findViewById(R.id.event_image);
+//            Picasso.with(ctx).load(image).into(imageView);
+//        }
 
     }
 

@@ -180,13 +180,4 @@ public class EditPersonalDetails extends AppCompatActivity {
 
         return true;
     }
-    private Boolean field_verification(String name, String email, String password, String password2, Uri uri) {
-        if (!TextUtils.isEmpty(name) &&
-                !TextUtils.isEmpty(email) &&
-                !TextUtils.isEmpty(password) &&
-                !TextUtils.isEmpty(password2) &&
-                password.equalsIgnoreCase(password2) && uri != null) {
-            return true;
-        } return false;
-    }
 }

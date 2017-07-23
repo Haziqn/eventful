@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
@@ -62,7 +65,25 @@ public class MainActivity extends AppCompatActivity
         databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Boolean age = dataSnapshot.hasChild("age");
+                Boolean gender = dataSnapshot.hasChild("gender");
+                Boolean interests = dataSnapshot.hasChild("interests");
+                Boolean race = dataSnapshot.hasChild("race");
+                Boolean occupation = dataSnapshot.hasChild("occupation");
+                if( age == false &&
+                        gender == false &&
+                        occupation == false &&
+                        race == false &&
+                        interests == false) {
+                    Snackbar snackbar = Snackbar
+                            .make(navigationView, "Please fill in your personal details", Snackbar.LENGTH_LONG);
+                    snackbar.show();
 
+//                    Intent intent = new Intent(getBaseContext(), EditPersonalDetails.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
+
+                }
             }
 
             @Override

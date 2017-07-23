@@ -9,63 +9,58 @@ public class EVENT {
     private String title;
     private String description;
     private String image;
-    private String address;
+    private String location;
+    private Double lat;
+    private Double lng;
+    private String startDate;
+    private String startTime;
+    private String endDate;
+    private String endTime;
     private String head_chief;
+    private String organiser;
     private String pax;
     private String status;
-    private String organiser;
-    private String date;
-    private String time;
     private String timeStamp;
-    private String organiser_name;
-    private String email;
-    private Double latitude;
-    private Double longitude;
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public EVENT(String title, String description, String image, String address, String head_chief, String pax, String status, String organiser, String date, String time, String timeStamp, String organiser_name, String email, Double latitude, Double longitude) {
-        this.title = title;
-        this.description = description;
-        this.image = image;
-        this.address = address;
-        this.head_chief = head_chief;
-        this.pax = pax;
-        this.status = status;
-        this.organiser = organiser;
-        this.date = date;
-        this.time = time;
-        this.timeStamp = timeStamp;
-        this.organiser_name = organiser_name;
-        this.email = email;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
+    private String eventType;
 
     public EVENT() {
 
     }
 
-    public String getOrganiser_name() {
-        return organiser_name;
-    }
+    public EVENT(String pax,
+                 Double lat,
+                 Double lng,
+                 String title,
+                 String image,
+                 String status,
+                 String endDate,
+                 String endTime,
+                 String location,
+                 String startDate,
+                 String startTime,
+                 String organiser,
+                 String timeStamp,
+                 String eventType,
+                 String head_chief,
+                 String description) {
 
-    public void setOrganiser_name(String organiser_name) {
-        this.organiser_name = organiser_name;
+        this.pax = pax;
+        this.lat = lat;
+        this.lng = lng;
+        this.title = title;
+        this.image = image;
+        this.status = status;
+        this.endDate = endDate;
+        this.endTime = endTime;
+        this.location = location;
+        this.startDate = startDate;
+        this.startTime = startTime;
+        this.organiser = organiser;
+        this.timeStamp = timeStamp;
+        this.eventType = eventType;
+        this.head_chief = head_chief;
+        this.description = description;
+
     }
 
     public String getTitle() {
@@ -92,28 +87,36 @@ public class EVENT {
         this.image = image;
     }
 
-    public String getAddress() {
-        return address;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getDate() {
-        return date;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getTime() {
-        return time;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getHead_chief() {
@@ -122,6 +125,14 @@ public class EVENT {
 
     public void setHead_chief(String head_chief) {
         this.head_chief = head_chief;
+    }
+
+    public String getOrganiser() {
+        return organiser;
+    }
+
+    public void setOrganiser(String organiser) {
+        this.organiser = organiser;
     }
 
     public String getPax() {
@@ -140,14 +151,6 @@ public class EVENT {
         this.status = status;
     }
 
-    public String getOrganiser() {
-        return organiser;
-    }
-
-    public void setOrganiser(String organiser) {
-        this.organiser = organiser;
-    }
-
     public String getTimeStamp() {
         return timeStamp;
     }
@@ -156,11 +159,35 @@ public class EVENT {
         this.timeStamp = timeStamp;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLocation() {
+        return location;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 }
