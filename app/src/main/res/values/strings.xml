@@ -16,4 +16,5 @@
     <string name="btnSkip">Skip</string>
     <string name="welcome">Welcome to Eventful</string>
     <string name="title_activity_guest_main">GuestMainActivity</string>
+    <string name="snackbar">Please fill in your personal details</string>
 </resources>
