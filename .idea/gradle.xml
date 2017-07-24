@@ -8,7 +8,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/activation" />
+            <option value="$PROJECT_DIR$/activationjar" />
+            <option value="$PROJECT_DIR$/additionnal" />
+            <option value="$PROJECT_DIR$/additionnaljar" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/mail" />
+            <option value="$PROJECT_DIR$/mailjar" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

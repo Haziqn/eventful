@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,7 +90,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 String title = event.getTitle().toString().trim();
                 String description = event.getDescription().toString().trim();
                 String image = event.getImage().toString().trim();
-                final String address = event.getAddress().toString().trim();
+                final String address = event.getLocation().toString().trim();
                 String head_chief = event.getHead_chief().toString().trim();
                 String pax = event.getPax().toString().trim();
                 final String organiser = event.getOrganiser().toString().trim();
@@ -107,11 +108,11 @@ public class ViewEventDetails extends AppCompatActivity {
                     }
                 });
 
-                String date = event.getDate().toString().trim();
-                String time = event.getTime().toString().trim();
+                String date = event.getStartDate().toString().trim();
+                String time = event.getStartTime().toString().trim();
                 String timestamp = event.getTimeStamp().toString().trim();
-                final Double latitude = event.getLatitude();
-                final Double longitude = event.getLongitude();
+                final Double latitude = event.getLat();
+                final Double longitude = event.getLng();
 
                 tvTitle.setText(title);
                 tvDate.setText(date);
@@ -164,16 +165,27 @@ public class ViewEventDetails extends AppCompatActivity {
                     final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
 
                     myBuilder.setTitle("Confirm Registration");
-                    myBuilder.setMessage("Register for event?");
+                    myBuilder.setMessage("An email will be sent to you upon confirmation of registration.");
                     myBuilder.setCancelable(false);
                     myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mDatabaseRefEventP.child(user_id).setValue("Unassigned");
                             Toast.makeText(ViewEventDetails.this, "Registration success!", Toast.LENGTH_LONG).show();
+
+                            try {
+                                GMailSender sender = new GMailSender("username@gmail.com", "password");
+                                sender.sendMail("This is Subject",
+                                        "This is Body",
+                                        "hndeathchair@gmail.com",
+                                        "hiiamnew60@gmail.com");
+                            } catch (Exception e) {
+                                Log.e("SendMail", e.getMessage(), e);
+                            }
                             dialog.dismiss();
                         }
                     });
+
                     myBuilder.setNegativeButton("Cancel", null);
 
                     AlertDialog myDialog = myBuilder.create();
