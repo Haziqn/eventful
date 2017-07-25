@@ -62,65 +62,73 @@ public class MainActivity extends AppCompatActivity
         final CircleImageView imageViewUserDP = (CircleImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
 
-        databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Boolean age = dataSnapshot.hasChild("age");
-                Boolean gender = dataSnapshot.hasChild("gender");
-                Boolean interests = dataSnapshot.hasChild("interests");
-                Boolean race = dataSnapshot.hasChild("race");
-                Boolean occupation = dataSnapshot.hasChild("occupation");
-                if( age == false &&
-                        gender == false &&
-                        occupation == false &&
-                        race == false &&
-                        interests == false) {
-                    Snackbar snackbar = Snackbar
-                            .make(navigationView, "Please fill in your personal details", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+        if (user != null) {
+
+            databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Boolean age = dataSnapshot.hasChild("age");
+                    Boolean gender = dataSnapshot.hasChild("gender");
+                    Boolean interests = dataSnapshot.hasChild("interests");
+                    Boolean race = dataSnapshot.hasChild("race");
+                    Boolean occupation = dataSnapshot.hasChild("occupation");
+                    if (age == false &&
+                            gender == false &&
+                            occupation == false &&
+                            race == false &&
+                            interests == false) {
+                        Snackbar snackbar = Snackbar
+                                .make(navigationView, "Please fill in your personal details", Snackbar.LENGTH_LONG);
+                        snackbar.show();
 
 //                    Intent intent = new Intent(getBaseContext(), EditPersonalDetails.class);
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 //                    startActivity(intent);
 
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
 
-        if (user == null) {
-            startActivity(new Intent(this, StartActivity.class));
-            finish();
-            return;
-        } else {
+        }
 
-            if (user.getPhotoUrl() == null) {
-                databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String user_name = dataSnapshot.child("user_name").getValue().toString();
-                        String email = dataSnapshot.child("email").getValue().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
+        else {
 
-                        textViewUserEmail.setText(email);
-                        textViewUsername.setText(user_name);
-                        Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+            if (user == null) {
+                startActivity(new Intent(this, StartActivity.class));
+                finish();
+                return;
             } else {
-                textViewUsername.setText(user.getDisplayName());
-                textViewUserEmail.setText(user.getEmail());
-                Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
+
+                if (user.getPhotoUrl() == null) {
+                    databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String user_name = dataSnapshot.child("user_name").getValue().toString();
+                            String email = dataSnapshot.child("email").getValue().toString();
+                            String image = dataSnapshot.child("image").getValue().toString();
+
+                            textViewUserEmail.setText(email);
+                            textViewUsername.setText(user_name);
+                            Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                } else {
+                    textViewUsername.setText(user.getDisplayName());
+                    textViewUserEmail.setText(user.getEmail());
+                    Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
+                }
+
             }
 
         }

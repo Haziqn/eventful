@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
@@ -48,7 +49,7 @@ public class ViewEventDetails extends AppCompatActivity {
     private GoogleMap map;
     LinearLayout calender, profile;
 
-    String organiser_name = "";
+    String organiser_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +161,6 @@ public class ViewEventDetails extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ViewEventDetails.this, user_id, Toast.LENGTH_LONG).show();
                 if (user_id != "") {
                     final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
 
@@ -171,17 +171,17 @@ public class ViewEventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mDatabaseRefEventP.child(user_id).setValue("Unassigned");
-                            Toast.makeText(ViewEventDetails.this, "Registration success!", Toast.LENGTH_LONG).show();
-
                             try {
-                                GMailSender sender = new GMailSender("username@gmail.com", "password");
+                                GMailSender sender = new GMailSender("hiiamnew60@gmail.com", "s9807827d");
                                 sender.sendMail("This is Subject",
                                         "This is Body",
-                                        "hndeathchair@gmail.com",
-                                        "hiiamnew60@gmail.com");
+                                        "hiiamnew60@gmail.com",
+                                        "15017420@myrp.edu.sg");
                             } catch (Exception e) {
                                 Log.e("SendMail", e.getMessage(), e);
                             }
+
+                            Toast.makeText(ViewEventDetails.this, "Registration success!", Toast.LENGTH_LONG).show();
                             dialog.dismiss();
                         }
                     });
