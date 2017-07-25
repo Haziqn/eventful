@@ -79,7 +79,7 @@ public class ViewEventDetails extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         Intent i = getIntent();
-        String itemKey = i.getStringExtra("key");
+        final String itemKey = i.getStringExtra("key");
 
         final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -199,8 +199,9 @@ public class ViewEventDetails extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent profileIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
-                startActivity(profileIntent);
+                Intent i = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                i.putExtra("key", itemKey);
+                startActivity(i);
             }
         });
     }

@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -62,6 +63,8 @@ public class MainActivity extends AppCompatActivity
         final CircleImageView imageViewUserDP = (CircleImageView) header.findViewById(R.id.ivUserDP);
         final FirebaseUser user = mAuth.getCurrentUser();
 
+        if (user != null) {
+
             databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity
                     Boolean interests = dataSnapshot.hasChild("interests");
                     Boolean race = dataSnapshot.hasChild("race");
                     Boolean occupation = dataSnapshot.hasChild("occupation");
-                    if( age == false &&
+                    if (age == false &&
                             gender == false &&
                             occupation == false &&
                             race == false &&
@@ -92,38 +95,41 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-
-        if (user == null) {
-            startActivity(new Intent(this, StartActivity.class));
-            finish();
-            return;
         } else {
 
-            if (user.getPhotoUrl() == null) {
-                databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String user_name = dataSnapshot.child("user_name").getValue().toString();
-                        String email = dataSnapshot.child("email").getValue().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
 
-                        textViewUserEmail.setText(email);
-                        textViewUsername.setText(user_name);
-                        Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+            if (user == null) {
+                startActivity(new Intent(this, StartActivity.class));
+                finish();
+                return;
             } else {
-                textViewUsername.setText(user.getDisplayName());
-                textViewUserEmail.setText(user.getEmail());
-                Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
-            }
 
+                if (user.getPhotoUrl() == null) {
+                    databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String user_name = dataSnapshot.child("user_name").getValue().toString();
+                            String email = dataSnapshot.child("email").getValue().toString();
+                            String image = dataSnapshot.child("image").getValue().toString();
+
+                            textViewUserEmail.setText(email);
+                            textViewUsername.setText(user_name);
+                            Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                } else {
+                    textViewUsername.setText(user.getDisplayName());
+                    textViewUserEmail.setText(user.getEmail());
+                    Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
+                }
+
+            }
         }
 
         header.setOnClickListener(new View.OnClickListener() {
