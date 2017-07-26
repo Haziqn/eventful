@@ -99,8 +99,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/tvWeb"
-                    android:layout_toStartOf="@+id/tvWeb"
+                    android:layout_toLeftOf="@+id/tvSite"
+                    android:layout_toStartOf="@+id/tvSite"
                     app:srcCompat="@mipmap/ic_web_black_24dp" />
 
                 <TextView
@@ -118,7 +118,7 @@
                 android:id="@+id/addressLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/webLayout"
+                android:layout_below="@+id/siteLayout"
                 android:layout_marginTop="15dp">
 
                 <ImageView
