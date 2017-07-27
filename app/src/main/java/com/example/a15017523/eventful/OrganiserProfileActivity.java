@@ -24,10 +24,10 @@ import com.squareup.picasso.Picasso;
 
 public class OrganiserProfileActivity extends AppCompatActivity {
 
-    TextView tvOrganiser, tvDesc, tvEmail, tvSite, tvAddress;
+    TextView tvOrganiser, tvDesc, tvEmail, tvWeb, tvAddress;
     ImageView img;
     private GoogleMap map;
-    RelativeLayout email, site, address;
+    RelativeLayout email, web, address;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -47,10 +47,10 @@ public class OrganiserProfileActivity extends AppCompatActivity {
         tvOrganiser = (TextView)findViewById(R.id.tvOrganiser);
         tvDesc = (TextView)findViewById(R.id.tvDesc);
         tvEmail = (TextView)findViewById(R.id.tvEmail);
-        tvSite = (TextView)findViewById(R.id.tvSite);
+        tvWeb = (TextView)findViewById(R.id.tvWeb);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
         email = (RelativeLayout)findViewById(R.id.emailLayout);
-        site = (RelativeLayout)findViewById(R.id.siteLayout);
+        web = (RelativeLayout)findViewById(R.id.webLayout);
         address = (RelativeLayout)findViewById(R.id.addressLayout);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
@@ -70,14 +70,14 @@ public class OrganiserProfileActivity extends AppCompatActivity {
                 String description = organiser.getDescription().toString().trim();
                 String image = organiser.getImage().toString().trim();
                 String email = organiser.getEmail().toString().trim();
-                String site = organiser.getSite().toString().trim();
+                String web = organiser.getWeb().toString().trim();
                 String address = organiser.getAddress().toString().trim();
 
                 tvOrganiser.setText(title);
                 tvDesc.setText(description);
                 Picasso.with(getBaseContext()).load(image).into(img);
                 tvEmail.setText(email);
-                tvSite.setText(site);
+                tvWeb.setText(web);
                 tvAddress.setText(address);
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -108,7 +108,7 @@ public class OrganiserProfileActivity extends AppCompatActivity {
             }
         });
 
-        site.setOnClickListener(new View.OnClickListener() {
+        web.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url = tvEmail.toString();

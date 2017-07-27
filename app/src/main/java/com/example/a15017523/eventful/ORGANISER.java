@@ -12,21 +12,21 @@ public class ORGANISER {
     String status;
     String user_name;
     String description;
-    String site;
+    String web;
     String address;
 
     public ORGANISER() {
 
     }
 
-    public ORGANISER(String email, String image, String password, String status, String user_name, String description, String site, String address) {
+    public ORGANISER(String email, String image, String password, String status, String user_name, String description, String web, String address) {
         this.email = email;
         this.image = image;
         this.password = password;
         this.status = status;
         this.user_name = user_name;
         this.description = description;
-        this.site = site;
+        this.web = web;
         this.address = address;
     }
 
@@ -78,12 +78,12 @@ public class ORGANISER {
         this.description = description;
     }
 
-    public String getSite() {
-        return site;
+    public String getWeb() {
+        return web;
     }
 
-    public void setSite(String site) {
-        this.site = site;
+    public void setWeb(String web) {
+        this.web = web;
     }
 
     public String getAddress() {
