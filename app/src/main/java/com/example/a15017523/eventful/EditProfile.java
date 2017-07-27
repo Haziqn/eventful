@@ -85,14 +85,20 @@ public class EditProfile extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String user_name = dataSnapshot.child("user_name").getValue().toString();
-                String email = dataSnapshot.child("email").getValue().toString();
-                String image = dataSnapshot.child("image").getValue().toString();
+                Boolean name = dataSnapshot.hasChild("user_name");
+                Boolean image = dataSnapshot.hasChild("image");
+                if( name != false && image != false) {
+                    String user_name = dataSnapshot.child("user_name").getValue().toString();
+                    String email = dataSnapshot.child("email").getValue().toString();
+                    String imagee = dataSnapshot.child("image").getValue().toString();
 
-
-                editEmail.setText(email);
-                editName.setText(user_name);
-                Picasso.with(getBaseContext()).load(image).into(imageButton);
+                    editEmail.setText(email);
+                    editName.setText(user_name);
+                    Picasso.with(getBaseContext()).load(imagee).into(imageButton);
+                } else {
+                    editName.setText("");
+                    editEmail.setText(user.getEmail());
+                }
 
             }
 

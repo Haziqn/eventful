@@ -65,6 +65,32 @@ public class MainActivity extends AppCompatActivity
 
         if (user != null) {
 
+            //User is Signed In
+            if (user.getPhotoUrl() == null) {
+                databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String user_name = dataSnapshot.child("user_name").getValue().toString();
+                        String email = dataSnapshot.child("email").getValue().toString();
+                        String image = dataSnapshot.child("image").getValue().toString();
+
+                        textViewUserEmail.setText(email);
+                        textViewUsername.setText(user_name);
+                        Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            } else {
+                textViewUsername.setText(user.getDisplayName());
+                textViewUserEmail.setText(user.getEmail());
+                Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
+            }
+
             databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,40 +122,9 @@ public class MainActivity extends AppCompatActivity
             });
 
         } else {
-
-
-            if (user == null) {
-                startActivity(new Intent(this, StartActivity.class));
-                finish();
-                return;
-            } else {
-
-                if (user.getPhotoUrl() == null) {
-                    databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String user_name = dataSnapshot.child("user_name").getValue().toString();
-                            String email = dataSnapshot.child("email").getValue().toString();
-                            String image = dataSnapshot.child("image").getValue().toString();
-
-                            textViewUserEmail.setText(email);
-                            textViewUsername.setText(user_name);
-                            Picasso.with(getBaseContext()).load(image).into(imageViewUserDP);
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                } else {
-                    textViewUsername.setText(user.getDisplayName());
-                    textViewUserEmail.setText(user.getEmail());
-                    Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
-                }
-
-            }
+            Intent intent = new Intent(getBaseContext(), StartActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
 
         header.setOnClickListener(new View.OnClickListener() {

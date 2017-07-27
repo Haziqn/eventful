@@ -59,22 +59,33 @@ public class ProfileActivity extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String user_name = dataSnapshot.child("user_name").getValue().toString();
-                String email = dataSnapshot.child("email").getValue().toString();
-                String image = dataSnapshot.child("image").getValue().toString();
-                String age = dataSnapshot.child("age").getValue().toString();
-//                String gender = dataSnapshot.child("gender").getValue().toString();
-                String occupation = dataSnapshot.child("occupation").getValue().toString();
-                String race = dataSnapshot.child("race").getValue().toString();
+                Boolean age1 = dataSnapshot.hasChild("age");
+                Boolean gender1 = dataSnapshot.hasChild("gender");
+                Boolean race1 = dataSnapshot.hasChild("race");
+                Boolean occupation1 = dataSnapshot.hasChild("occupation");
+                if( age1 != false && gender1 != false && race1 != false && occupation1 != false) {
+                    String user_name = dataSnapshot.child("user_name").getValue().toString();
+                    String email = dataSnapshot.child("email").getValue().toString();
+                    String image = dataSnapshot.child("image").getValue().toString();
+                    String age = dataSnapshot.child("age").getValue().toString();
+                String gender = dataSnapshot.child("gender").getValue().toString();
+                    String occupation = dataSnapshot.child("occupation").getValue().toString();
+                    String race = dataSnapshot.child("race").getValue().toString();
 
-                textViewEmail.setText(email);
-                textViewUsername.setText(user_name);
+                    textViewEmail.setText(email);
+                    textViewUsername.setText(user_name);
 //                textViewGender.setText(gender);
-                textViewRace.setText(race);
-                textViewOccupation.setText(occupation);
-                textViewAge.setText(age);
-                Picasso.with(getBaseContext()).load(image).into(imageButton);
-
+                    textViewRace.setText(race);
+                    textViewGender.setText(gender);
+                    textViewOccupation.setText(occupation);
+                    textViewAge.setText(age);
+                    Picasso.with(getBaseContext()).load(image).into(imageButton);
+                } else {
+                    textViewRace.setText("");
+                    textViewOccupation.setText("");
+                    textViewAge.setText("");
+                    textViewGender.setText("");
+                }
             }
 
             @Override

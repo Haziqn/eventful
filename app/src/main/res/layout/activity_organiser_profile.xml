@@ -98,10 +98,10 @@
                     android:id="@+id/imgWeb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
+                    app:srcCompat="@mipmap/ic_web_black_24dp"
+                    android:layout_alignBottom="@+id/tvWeb"
                     android:layout_toLeftOf="@+id/tvWeb"
-                    android:layout_toStartOf="@+id/tvWeb"
-                    app:srcCompat="@mipmap/ic_web_black_24dp" />
+                    android:layout_toStartOf="@+id/tvWeb" />
 
                 <TextView
                     android:id="@+id/tvWeb"

@@ -117,7 +117,7 @@
 
     <Button
         android:id="@+id/btnResetPw"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#D62828"
         android:text="Reset password Here"
