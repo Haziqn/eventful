@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="occupation_array">
+        <item>Student</item>
+        <item>Working</item>
+        <item>Unemployed</item>
+        <item>Others</item>
+    </string-array>
+</resources>

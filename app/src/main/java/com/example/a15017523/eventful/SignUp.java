@@ -3,6 +3,7 @@ package com.example.a15017523.eventful;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -55,6 +57,8 @@ public class SignUp extends AppCompatActivity {
     ProgressDialog mProgress;
     String TAG = "SignUp.java";
 
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
     String name = "";
     String email = "";
     String password = "";
@@ -76,7 +80,6 @@ public class SignUp extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
         Storage = FirebaseStorage.getInstance().getReference();
-
 
         mProgress = new ProgressDialog(this);
 
@@ -154,7 +157,7 @@ public class SignUp extends AppCompatActivity {
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                 if (task.isSuccessful()) {
 
-                                    participant1.setEmail(email);
+                                    participant1.setEmail(mAuth.getCurrentUser().getEmail());
                                     participant1.setPassword(encodePassword);
                                     participant1.setStatus("active");
                                     participant1.setUser_name(name);
@@ -171,6 +174,20 @@ public class SignUp extends AppCompatActivity {
 
                                             if (task.isSuccessful()) {
 
+                                                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                                                editor.putString("password", password);
+                                                editor.commit();
+                                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                                user.sendEmailVerification()
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Log.d(TAG, "Email sent.");
+                                                                }
+                                                            }
+                                                        });
+
                                                 mProgress.dismiss();
                                                 Intent intent = new Intent(SignUp.this, MainActivity.class);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -186,7 +203,7 @@ public class SignUp extends AppCompatActivity {
                                     try {
                                         throw task.getException();
                                     } catch (FirebaseAuthWeakPasswordException e){
-                                        error = "Weak password";
+                                        error = "Requires at least 1 capital letter, 1 special character, 1 number and at least 6 characters!";
                                     } catch (FirebaseAuthInvalidCredentialsException e){
                                         error = "Invalid email";
                                     } catch (FirebaseAuthUserCollisionException e) {

@@ -131,28 +131,6 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etEmailLogin" />
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="monospace"
-                    android:gravity="start"
-                    android:text="(Requires at least 1 capital letter, 1 special character, 1 number and at least 6 characters!)"
-                    android:textAlignment="center"
-                    android:textAllCaps="true"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="#D62828"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPassword" />
-
                 <EditText
                     android:id="@+id/etPwLogin"
                     android:layout_width="match_parent"

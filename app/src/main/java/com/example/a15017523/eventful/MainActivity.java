@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, Home.OnFragmentInteractionListener, All.OnFragmentInteractionListener, MyEvents.OnFragmentInteractionListener {
 
@@ -99,18 +98,16 @@ public class MainActivity extends AppCompatActivity
                     Boolean interests = dataSnapshot.hasChild("interests");
                     Boolean race = dataSnapshot.hasChild("race");
                     Boolean occupation = dataSnapshot.hasChild("occupation");
-                    if (age == false &&
-                            gender == false &&
-                            occupation == false &&
-                            race == false &&
-                            interests == false) {
+                    if (!age &&
+                            !gender &&
+                            !occupation &&
+                            !race &&
+                            !interests) {
+                        Intent intent = new Intent(MainActivity.this, EditProfile.class);
+                        startActivity(intent);
                         Snackbar snackbar = Snackbar
                                 .make(navigationView, "Please fill in your personal details", Snackbar.LENGTH_LONG);
                         snackbar.show();
-
-//                    Intent intent = new Intent(getBaseContext(), EditPersonalDetails.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
 
                     }
                 }
@@ -176,7 +173,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

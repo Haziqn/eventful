@@ -51,7 +51,7 @@ public class ViewEventDetails extends AppCompatActivity {
     private GoogleMap map;
     LinearLayout calender, profile;
 
-    String organiser_name = "";
+    String organiser_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +111,7 @@ public class ViewEventDetails extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                        tvOrganiser.setText("by: " + organiser_name);
                     }
 
                     @Override
@@ -132,7 +133,6 @@ public class ViewEventDetails extends AppCompatActivity {
                 tvEndDate.setText(endDate);
                 tvEndTime.setText(endTime);
                 tvDesc.setText(description);
-                tvOrganiser.setText("by: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText(address);
                 tvPax.setText(pax);
@@ -151,7 +151,10 @@ public class ViewEventDetails extends AppCompatActivity {
                         LatLng location = new LatLng(latitude, longitude);
                         map.addMarker(new MarkerOptions().position(location).title(address));
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-                        if (ActivityCompat.checkSelfPermission(ViewEventDetails.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ViewEventDetails.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.checkSelfPermission(ViewEventDetails.this,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(ViewEventDetails.this,
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
                         map.setMyLocationEnabled(true);
@@ -171,7 +174,7 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
-        final DatabaseReference mDatabaseRefEventP = mDatabase.child("participants");
+        final DatabaseReference mDatabaseRefEventP = mDatabase.child(itemKey);
         final String user_id = mAuth.getCurrentUser().getUid();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,10 +189,11 @@ public class ViewEventDetails extends AppCompatActivity {
                     myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mDatabaseRefEventP.setValue(itemKey).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            DatabaseReference mJoin = mDatabaseRefEventP.push();
+                            mJoin.child("participants").setValue(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(ViewEventDetails.this, "Registration success!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ViewEventDetails.this, "Registration success", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -240,9 +244,6 @@ public class ViewEventDetails extends AppCompatActivity {
                 finish();
                 return true;
         }
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -37,6 +38,8 @@ public class MyEvents extends Fragment {
     FirebaseAuth firebaseAuth;
     String itemKey;
 
+    String organiser_name;
+
     public MyEvents() {
         // Required empty public constructor
     }
@@ -56,38 +59,36 @@ public class MyEvents extends Fragment {
             @Override
             protected void populateViewHolder(MyEvents.BlogViewHolder viewHolder, EVENT model, final int position) {
 
-//                String uid = model.getOrganiser();
-//
-//                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
-//                databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        organiser_name = dataSnapshot.child("user_name").getValue().toString();
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-//
-//                viewHolder.setTitle(model.getTitle());
-//                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-//                viewHolder.setLocation(model.getLocation());
-//                viewHolder.setOrganiser(organiser_name);
-//                viewHolder.setPax(model.getPax());
-//
-//
-//                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent i = new Intent(getContext(), ViewEventDetails.class);
-//                        itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
-//                        i.putExtra("key", itemKey);
-//                        startActivity(i);
-//
-//                    }
-//                });
+                String uid = model.getOrganiser();
+
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+                databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setLocation(model.getLocation());
+                viewHolder.setOrganiser(organiser_name);
+                viewHolder.setPax(model.getPax());
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(getContext(), ViewEventDetails.class);
+                        itemKey = String.valueOf(firebaseRecyclerAdapter.getRef(position).getKey());
+                        i.putExtra("key", itemKey);
+                        startActivity(i);
+                    }
+                });
             }
 
         };
@@ -157,29 +158,6 @@ public class MyEvents extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MyEvents.OnFragmentInteractionListener) {
-            mListener = (MyEvents.OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

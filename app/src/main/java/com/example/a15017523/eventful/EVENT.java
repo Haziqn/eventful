@@ -1,5 +1,7 @@
 package com.example.a15017523.eventful;
 
+import java.util.ArrayList;
+
 /**
  * Created by 15017523 on 7/5/2017.
  */
@@ -22,7 +24,7 @@ public class EVENT {
     private String status;
     private String timeStamp;
     private String eventType;
-
+    private String participants;
     public EVENT() {
 
     }
@@ -42,7 +44,8 @@ public class EVENT {
                  String timeStamp,
                  String eventType,
                  String head_chief,
-                 String description) {
+                 String description,
+                 String participants) {
 
         this.pax = pax;
         this.lat = lat;
@@ -60,6 +63,7 @@ public class EVENT {
         this.eventType = eventType;
         this.head_chief = head_chief;
         this.description = description;
+        this.participants = participants;
 
     }
 
@@ -189,5 +193,13 @@ public class EVENT {
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
+    }
+
+    public String getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(String participants) {
+        this.participants = participants;
     }
 }
