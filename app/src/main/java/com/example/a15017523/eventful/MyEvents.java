@@ -144,10 +144,10 @@ public class MyEvents extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_my_events,
                 container, false);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("EVENT").child("participants");
         firebaseAuth = FirebaseAuth.getInstance();
         String uid = firebaseAuth.getCurrentUser().getUid();
-        mQuery = mDatabase.child("participants").orderByValue().equalTo(uid);
+        mQuery = mDatabase.orderByChild(uid).equalTo(uid);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getBaseContext());
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);

@@ -42,6 +42,9 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ViewEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType;
@@ -174,7 +177,7 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
-        final DatabaseReference mDatabaseRefEventP = mDatabase.child(itemKey);
+        final DatabaseReference mDatabaseRefEventP = mDatabase.child(itemKey).child("participants");
         final String user_id = mAuth.getCurrentUser().getUid();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +193,7 @@ public class ViewEventDetails extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             DatabaseReference mJoin = mDatabaseRefEventP.push();
-                            mJoin.child("participants").setValue(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            mJoin.setValue(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(ViewEventDetails.this, "Registration success", Toast.LENGTH_SHORT).show();
@@ -252,5 +255,19 @@ public class ViewEventDetails extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static String getCurrentTimeStamp(){
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
     }
 }

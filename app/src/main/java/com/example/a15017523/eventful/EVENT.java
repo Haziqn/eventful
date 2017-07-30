@@ -24,7 +24,6 @@ public class EVENT {
     private String status;
     private String timeStamp;
     private String eventType;
-    private String participants;
     public EVENT() {
 
     }
@@ -44,8 +43,7 @@ public class EVENT {
                  String timeStamp,
                  String eventType,
                  String head_chief,
-                 String description,
-                 String participants) {
+                 String description) {
 
         this.pax = pax;
         this.lat = lat;
@@ -63,7 +61,6 @@ public class EVENT {
         this.eventType = eventType;
         this.head_chief = head_chief;
         this.description = description;
-        this.participants = participants;
 
     }
 
@@ -195,11 +192,4 @@ public class EVENT {
         this.eventType = eventType;
     }
 
-    public String getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(String participants) {
-        this.participants = participants;
-    }
 }
