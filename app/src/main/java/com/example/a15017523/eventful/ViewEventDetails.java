@@ -47,7 +47,7 @@ import java.util.Date;
 
 public class ViewEventDetails extends AppCompatActivity {
 
-    TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType;
+    TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType, tvOrgId;
     ImageView imageView;
     Button btnRegister;
     FirebaseAuth mAuth;
@@ -79,6 +79,7 @@ public class ViewEventDetails extends AppCompatActivity {
         tvTimeStamp = (TextView)findViewById(R.id.tvTimeStamp);
         tvPax = (TextView)findViewById(R.id.tvPax);
         tvType = (TextView)findViewById(R.id.tvEventType);
+        tvOrgId = (TextView)findViewById(R.id.tvOrgId);
 
         imageView = (ImageView)findViewById(R.id.imageView2);
 
@@ -141,6 +142,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 tvPax.setText(pax);
                 tvTimeStamp.setText(timeStamp);
                 tvType.setText(type);
+                tvOrgId.setText(organiser);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -226,8 +228,9 @@ public class ViewEventDetails extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String orgKey = tvOrgId.getText().toString();
                 Intent i = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
-                i.putExtra("key", itemKey);
+                i.putExtra("key", orgKey.toString());
                 startActivity(i);
             }
         });

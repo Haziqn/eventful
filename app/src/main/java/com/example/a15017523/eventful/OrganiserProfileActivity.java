@@ -24,16 +24,14 @@ import com.squareup.picasso.Picasso;
 
 public class OrganiserProfileActivity extends AppCompatActivity {
 
+    String post_key = null;
+
     TextView tvOrganiser, tvDesc, tvEmail, tvWeb, tvAddress;
     ImageView img;
     private GoogleMap map;
     RelativeLayout email, web, address;
 
-    FirebaseAuth mAuth;
     DatabaseReference mDatabase;
-    StorageReference Storage;
-
-    String organiser_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +40,11 @@ public class OrganiserProfileActivity extends AppCompatActivity {
 
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+
+        Intent i = getIntent();
+        final String post_key = i.getStringExtra("key");
 
         img = (ImageView) findViewById(R.id.imgOrganiser);
         tvOrganiser = (TextView)findViewById(R.id.tvOrganiser);
@@ -53,29 +56,19 @@ public class OrganiserProfileActivity extends AppCompatActivity {
         web = (RelativeLayout)findViewById(R.id.webLayout);
         address = (RelativeLayout)findViewById(R.id.addressLayout);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
-
-        Intent i = getIntent();
-        String itemKey = i.getStringExtra("key");
-
-        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        final DatabaseReference mDatabase = databaseReference.child("ORGANISER");
-
-        final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        mDatabase.child(post_key).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ORGANISER organiser = dataSnapshot.getValue(ORGANISER.class);
-                String title = organiser.getUser_name().toString().trim();
-                String description = organiser.getDescription().toString().trim();
-                String image = organiser.getImage().toString().trim();
-                String email = organiser.getEmail().toString().trim();
-                String web = organiser.getWeb().toString().trim();
-                String address = organiser.getAddress().toString().trim();
+                String title = (String) dataSnapshot.child("user_name").getValue();
+                String description = (String) dataSnapshot.child("description").getValue();
+                String image = (String) dataSnapshot.child("image").getValue();
+                String email = (String) dataSnapshot.child("email").getValue();
+                String web = (String) dataSnapshot.child("business_site").getValue();
+                String address = (String) dataSnapshot.child("address").getValue();
 
                 tvOrganiser.setText(title);
                 tvDesc.setText(description);
-                Picasso.with(getBaseContext()).load(image).into(img);
+                Picasso.with(OrganiserProfileActivity.this).load(image).into(img);
                 tvEmail.setText(email);
                 tvWeb.setText(web);
                 tvAddress.setText(address);
@@ -92,39 +85,39 @@ public class OrganiserProfileActivity extends AppCompatActivity {
         });
 
         email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent email = new Intent(Intent.ACTION_SEND);
-                email.putExtra(Intent.EXTRA_EMAIL,
-                        new String[]{tvOrganiser.toString()});
-                email.putExtra(Intent.EXTRA_SUBJECT,
-                        "Test Email from C347");
-                email.putExtra(Intent.EXTRA_TEXT,
-                        tvOrganiser.getText());
-                email.setType("message/rfc822");
-                startActivity(Intent.createChooser(email,
-                        "Choose an Email client :"));
+        @Override
+        public void onClick(View v) {
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.putExtra(Intent.EXTRA_EMAIL,
+                    new String[]{tvOrganiser.toString()});
+            email.putExtra(Intent.EXTRA_SUBJECT,
+                    "Test Email from C347");
+            email.putExtra(Intent.EXTRA_TEXT,
+                    tvOrganiser.getText());
+            email.setType("message/rfc822");
+            startActivity(Intent.createChooser(email,
+                    "Choose an Email client :"));
 
-            }
-        });
+        }
+    });
 
         web.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = tvEmail.toString();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
+        @Override
+        public void onClick(View v) {
+            String url = tvEmail.toString();
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        }
+    });
 
         address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        @Override
+        public void onClick(View v) {
 
-            }
-        });
-    }
+        }
+    });
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
