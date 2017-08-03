@@ -11,17 +11,19 @@ public class ORGANISER {
     String password;
     String status;
     String user_name;
+    String description;
 
     public ORGANISER() {
 
     }
 
-    public ORGANISER(String email, String image, String password, String status, String user_name) {
+    public ORGANISER(String email, String image, String password, String status, String user_name, String description) {
         this.email = email;
         this.image = image;
         this.password = password;
         this.status = status;
         this.user_name = user_name;
+        this.description = description;
     }
 
     public String getEmail() {
@@ -34,6 +36,14 @@ public class ORGANISER {
 
     public String getImage() {
         return image;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setImage(String image) {

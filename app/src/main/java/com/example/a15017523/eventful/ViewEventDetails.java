@@ -1,10 +1,14 @@
 package com.example.a15017523.eventful;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.text.Layout;
 import android.util.Log;
@@ -31,6 +36,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +46,16 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 public class ViewEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief, tvTitle;
@@ -47,7 +63,11 @@ public class ViewEventDetails extends AppCompatActivity {
     Button btnRegister;
     FirebaseAuth mAuth;
     private GoogleMap map;
+    ProgressDialog pDialog = null;
+    Context context = null;
+    String rec, subject, textMessage;
     LinearLayout calender, profile;
+    Session session = null;
 
     String organiser_name;
 
@@ -55,6 +75,9 @@ public class ViewEventDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event_details);
+
+        mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser user = mAuth.getCurrentUser();
 
         setTitle("");
 
@@ -76,11 +99,12 @@ public class ViewEventDetails extends AppCompatActivity {
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mDatabase = databaseReference.child("EVENT");
+        final DatabaseReference mDatabaseParticipant = databaseReference.child("PARTICIPANT");
         DatabaseReference mDatabaseEventP = databaseReference.child("EVENT_PARTICIPANTS");
         mAuth = FirebaseAuth.getInstance();
 
         Intent i = getIntent();
-        String itemKey = i.getStringExtra("key");
+        final String itemKey = i.getStringExtra("key");
 
         final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -172,16 +196,28 @@ public class ViewEventDetails extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             mDatabaseRefEventP.child(user_id).setValue("Unassigned");
                             try {
-                                GMailSender sender = new GMailSender("hiiamnew60@gmail.com", "s9807827d");
-                                sender.sendMail("This is Subject",
-                                        "This is Body",
-                                        "hiiamnew60@gmail.com",
-                                        "15017420@myrp.edu.sg");
+                                Properties props = new Properties();
+                                props.put("mail.smtp.host", "smtp.gmail.com");
+                                props.put("mail.smtp.socketFactory.port", "465");
+                                props.put("mail.smtp.socketFactory.class", "java.net.ssl.SSLSocketFactory");
+                                props.put("mail.smtp.auth", "true");
+                                props.put("mail.smtp.port", "465");
+
+                                session = Session.getDefaultInstance(props, new Authenticator() {
+                                    @Override
+                                    protected PasswordAuthentication getPasswordAuthentication() {
+                                        return new PasswordAuthentication("hndeathchair@gmail.com", "20august");
+                                    }
+                                });
+
+                                pDialog = ProgressDialog.show(ViewEventDetails.this, "", "Registering for Event...", true);
+
+                                RetrieveFeedTask  task = new RetrieveFeedTask();
+                                task.execute();
+
                             } catch (Exception e) {
                                 Log.e("SendMail", e.getMessage(), e);
                             }
-
-                            Toast.makeText(ViewEventDetails.this, "Registration success!", Toast.LENGTH_LONG).show();
                             dialog.dismiss();
                         }
                     });
@@ -197,6 +233,8 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
+
+
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,10 +248,88 @@ public class ViewEventDetails extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent profileIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
-                startActivity(profileIntent);
+                final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
+                final DatabaseReference mDatabaseRefEmail = mDatabaseParticipant.child(user.getUid());
+
+                final DatabaseReference mDatabaseRefTitle = mDatabase.child(itemKey);
+                mDatabaseRefTitle.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        EVENT event = dataSnapshot.getValue(EVENT.class);
+                        String title = event.getTitle().toString().trim();
+                        Intent titleIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                        titleIntent.putExtra("title", title);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                mDatabaseRefEmail.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        PARTICIPANT participant = dataSnapshot.getValue(PARTICIPANT.class);
+                        final String participantEmail = participant.getEmail().toString().trim();
+                        Intent emailIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                        emailIntent.putExtra("participantEmail", participantEmail);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                mDatabaseRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        EVENT event = dataSnapshot.getValue(EVENT.class);
+                        final String organiser = event.getOrganiser().toString().trim();
+                        Toast.makeText(ViewEventDetails.this, organiser, Toast.LENGTH_LONG).show();
+                        Intent profileIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                        profileIntent.putExtra("organiserKey", organiser);
+                        startActivity(profileIntent);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
             }
         });
+    }
+
+    class RetrieveFeedTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress("hndeathchair@gmail.com"));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("hiiamnew60@gmail.com"));
+                message.setContent("Testing", "text/html; charset=utf-8");
+
+            } catch(MessagingException e) {
+                e.printStackTrace();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            pDialog.dismiss();
+            Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
