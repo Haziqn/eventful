@@ -14,12 +14,14 @@ public class ORGANISER {
     String description;
     String web;
     String address;
+    private Double lat;
+    private Double lng;
 
     public ORGANISER() {
 
     }
 
-    public ORGANISER(String email, String image, String password, String status, String user_name, String description, String web, String address) {
+    public ORGANISER(String email, String image, String password, String status, String user_name, String description, String web, String address, Double lat, Double lng) {
         this.email = email;
         this.image = image;
         this.password = password;
@@ -28,6 +30,8 @@ public class ORGANISER {
         this.description = description;
         this.web = web;
         this.address = address;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public String getEmail() {
@@ -92,5 +96,21 @@ public class ORGANISER {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
     }
 }
