@@ -49,13 +49,16 @@ public class All extends Fragment {
             @Override
             protected void populateViewHolder(BlogViewHolder viewHolder, EVENT model, final int position) {
 
-                String uid = model.getOrganiser();
+                final String uid = model.getOrganiser();
 
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("ORGANISER");
+
                 databaseReference.child(uid).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        organiser_name = dataSnapshot.child("user_name").getValue().toString();
+
+                            organiser_name = dataSnapshot.child("user_name").getValue().toString();
+
                     }
 
                     @Override
