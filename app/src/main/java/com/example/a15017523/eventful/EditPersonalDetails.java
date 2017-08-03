@@ -26,13 +26,14 @@ import java.util.ArrayList;
 
 public class EditPersonalDetails extends AppCompatActivity {
 
-    EditText editTextAge, editTextOccupation;
+    EditText editTextAge;
     Button buttonConfirm;
-    Spinner spinner;
+    Spinner spinnerOccupation, spinnerRace;
     CheckBox soccer, programming, ml, singing, photography;
 
     String gender;
     String race;
+    String occupation;
 
     ProgressDialog mProgress;
 
@@ -55,18 +56,34 @@ public class EditPersonalDetails extends AppCompatActivity {
         photography = (CheckBox)findViewById(R.id.cbPhotography);
 
         editTextAge = (EditText) findViewById(R.id.etAge);
-        editTextOccupation = (EditText) findViewById(R.id.etOccupation);
 
         RadioGroup rg = (RadioGroup) findViewById(R.id.rgGender);
         int selectedButtonId = rg.getCheckedRadioButtonId();
         RadioButton rb = (RadioButton) findViewById(selectedButtonId);
         gender = rb.getText().toString();
-        spinner = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        spinnerOccupation = (Spinner) findViewById(R.id.spinnerOccupation);
+        ArrayAdapter<CharSequence> adapterOccupation = ArrayAdapter.createFromResource(this,
+                R.array.occupation_array, android.R.layout.simple_spinner_item);
+        adapterOccupation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOccupation.setAdapter(adapterOccupation);
+        spinnerOccupation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                occupation = adapterView.getItemAtPosition(i).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                occupation = "";
+            }
+        });
+
+        spinnerRace = (Spinner) findViewById(R.id.spinnerRace);
+        ArrayAdapter<CharSequence> adapterRace = ArrayAdapter.createFromResource(this,
                 R.array.race_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        adapterRace.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRace.setAdapter(adapterRace);
+        spinnerRace.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 race = adapterView.getItemAtPosition(i).toString();
@@ -88,7 +105,6 @@ public class EditPersonalDetails extends AppCompatActivity {
                 mProgress.show();
 
                 String age = editTextAge.getText().toString();
-                String occupation = editTextOccupation.getText().toString();
 
                 if(field_verification(age, occupation, race, gender, categories)) {
 

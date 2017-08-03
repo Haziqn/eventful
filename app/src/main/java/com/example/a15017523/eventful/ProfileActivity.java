@@ -1,9 +1,13 @@
 package com.example.a15017523.eventful;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -14,6 +18,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -26,6 +32,8 @@ public class ProfileActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     StorageReference Storage;
+
+    String interestss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +67,46 @@ public class ProfileActivity extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String user_name = dataSnapshot.child("user_name").getValue().toString();
-                String email = dataSnapshot.child("email").getValue().toString();
-                String image = dataSnapshot.child("image").getValue().toString();
-                String age = dataSnapshot.child("age").getValue().toString();
-//                String gender = dataSnapshot.child("gender").getValue().toString();
-                String occupation = dataSnapshot.child("occupation").getValue().toString();
-                String race = dataSnapshot.child("race").getValue().toString();
+                Boolean name = dataSnapshot.hasChild("user_name");
+                Boolean image = dataSnapshot.hasChild("image");
+                Boolean age = dataSnapshot.hasChild("age");
+                Boolean interests = dataSnapshot.child("interests").hasChildren();
+                Boolean race = dataSnapshot.hasChild("race");
+                Boolean occupation = dataSnapshot.hasChild("occupation");
+                Boolean gender = dataSnapshot.hasChild("gender");
 
-                textViewEmail.setText(email);
-                textViewUsername.setText(user_name);
-//                textViewGender.setText(gender);
-                textViewRace.setText(race);
-                textViewOccupation.setText(occupation);
-                textViewAge.setText(age);
-                Picasso.with(getBaseContext()).load(image).into(imageButton);
+                if (name && image) {
 
+                    String user_name = dataSnapshot.child("user_name").getValue().toString();
+                    String imagee = dataSnapshot.child("image").getValue().toString();
+                    textViewEmail.setText(user.getEmail());
+                    textViewUsername.setText(user_name);
+                    Picasso.with(getBaseContext()).load(imagee).into(imageButton);
+
+                } else if (age && interests && race && occupation && gender) {
+
+                    String race2 = dataSnapshot.child("race").getValue().toString();
+                    String age2 = dataSnapshot.child("age").getValue().toString();
+                    ArrayList<String> interests2 = (ArrayList<String>) dataSnapshot.child("interests").getValue();
+                    String occupation2 = dataSnapshot.child("occupation").getValue().toString();
+                    String gender2 = dataSnapshot.child("gender").getValue().toString();
+                    textViewAge.setText(age2);
+
+                    for (int i = 0; i < interests2.size(); i++) {
+                        interestss += interests2.get(i).toString() + "\n";
+                    }
+
+                    textViewInterests.setText(interestss);
+
+                    if (gender2 == "Male") {
+                        textViewGender.setText("Male");
+                    } else if (gender2 == "Female") {
+                        textViewGender.setText("Female");
+                    }
+
+                    textViewRace.setText(race2);
+                    textViewOccupation.setText(occupation2);
+                }
             }
 
             @Override

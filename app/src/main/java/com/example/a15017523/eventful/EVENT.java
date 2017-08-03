@@ -1,5 +1,7 @@
 package com.example.a15017523.eventful;
 
+import java.util.ArrayList;
+
 /**
  * Created by 15017523 on 7/5/2017.
  */
@@ -22,7 +24,6 @@ public class EVENT {
     private String status;
     private String timeStamp;
     private String eventType;
-
     public EVENT() {
 
     }
@@ -190,4 +191,5 @@ public class EVENT {
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
+
 }

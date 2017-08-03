@@ -36,8 +36,8 @@ public class SignIn extends AppCompatActivity {
     ProgressDialog progressDialog;
     DatabaseReference databaseReference;
     FirebaseAuth mAuth;
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,6 @@ public class SignIn extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
 
-
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,6 +69,8 @@ public class SignIn extends AppCompatActivity {
 
         final String email = editTextEmail.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
+
+
 
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
             progressDialog.setTitle("Signing In");

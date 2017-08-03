@@ -1,14 +1,11 @@
 package com.example.a15017523.eventful;
 
-import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -16,8 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.telephony.SmsManager;
 import android.text.Layout;
 import android.util.Log;
 import android.view.Menu;
@@ -35,8 +30,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,28 +42,17 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ViewEventDetails extends AppCompatActivity {
 
-    TextView tvAddress, tvDesc, tvDate, tvTime, tvOrganiser, tvHeadChief, tvTitle;
+    TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType, tvOrgId;
     ImageView imageView;
     Button btnRegister;
     FirebaseAuth mAuth;
     private GoogleMap map;
-    ProgressDialog pDialog = null;
-    Context context = null;
-    String rec, subject, textMessage;
     LinearLayout calender, profile;
-    Session session = null;
 
     String organiser_name;
 
@@ -75,9 +60,6 @@ public class ViewEventDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event_details);
-
-        mAuth = FirebaseAuth.getInstance();
-        final FirebaseUser user = mAuth.getCurrentUser();
 
         setTitle("");
 
@@ -87,20 +69,26 @@ public class ViewEventDetails extends AppCompatActivity {
 
         tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvDesc = (TextView)findViewById(R.id.tvDescription);
-        tvDate = (TextView)findViewById(R.id.tvDate);
-        tvTime = (TextView)findViewById(R.id.tvTime);
+        tvStartDate = (TextView)findViewById(R.id.tvStartDate);
+        tvStartTime = (TextView)findViewById(R.id.tvStartTime);
+        tvEndDate = (TextView)findViewById(R.id.tvEndDate);
+        tvEndTime = (TextView)findViewById(R.id.tvEndTime);
         tvOrganiser = (TextView)findViewById(R.id.tvOrganiser);
         tvHeadChief = (TextView)findViewById(R.id.tvHeadChief);
-        imageView = (ImageView)findViewById(R.id.imageView2);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
+        tvTimeStamp = (TextView)findViewById(R.id.tvTimeStamp);
+        tvPax = (TextView)findViewById(R.id.tvPax);
+        tvType = (TextView)findViewById(R.id.tvEventType);
+        tvOrgId = (TextView)findViewById(R.id.tvOrgId);
+
+        imageView = (ImageView)findViewById(R.id.imageView2);
+
         btnRegister = (Button)findViewById(R.id.btnRegister);
         calender = (LinearLayout)findViewById(R.id.calender);
         profile = (LinearLayout)findViewById(R.id.profile);
 
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mDatabase = databaseReference.child("EVENT");
-        final DatabaseReference mDatabaseParticipant = databaseReference.child("PARTICIPANT");
-        DatabaseReference mDatabaseEventP = databaseReference.child("EVENT_PARTICIPANTS");
         mAuth = FirebaseAuth.getInstance();
 
         Intent i = getIntent();
@@ -118,6 +106,8 @@ public class ViewEventDetails extends AppCompatActivity {
                 final String address = event.getLocation().toString().trim();
                 String head_chief = event.getHead_chief().toString().trim();
                 String pax = event.getPax().toString().trim();
+                String timeStamp = event.getTimeStamp().toString().trim();
+                String type = event.getEventType().toString().trim();
                 final String organiser = event.getOrganiser().toString().trim();
 
                 DatabaseReference mOrganiser = databaseReference.child("ORGANISER").child(organiser);
@@ -125,6 +115,7 @@ public class ViewEventDetails extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         organiser_name = dataSnapshot.child("user_name").getValue().toString();
+                        tvOrganiser.setText("by: " + organiser_name);
                     }
 
                     @Override
@@ -133,19 +124,25 @@ public class ViewEventDetails extends AppCompatActivity {
                     }
                 });
 
-                String date = event.getStartDate().toString().trim();
-                String time = event.getStartTime().toString().trim();
-                String timestamp = event.getTimeStamp().toString().trim();
+                String startDate = event.getStartDate().toString().trim();
+                String startTime = event.getStartTime().toString().trim();
+                String endDate = event.getEndDate().toString().trim();
+                String endTime = event.getEndTime().toString().trim();
                 final Double latitude = event.getLat();
                 final Double longitude = event.getLng();
 
                 tvTitle.setText(title);
-                tvDate.setText(date);
-                tvTime.setText(time);
+                tvStartDate.setText(startDate);
+                tvStartTime.setText(startTime);
+                tvEndDate.setText(endDate);
+                tvEndTime.setText(endTime);
                 tvDesc.setText(description);
-                tvOrganiser.setText("by: " + organiser_name);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText(address);
+                tvPax.setText(pax);
+                tvTimeStamp.setText(timeStamp);
+                tvType.setText(type);
+                tvOrgId.setText(organiser);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -156,11 +153,13 @@ public class ViewEventDetails extends AppCompatActivity {
                         int permissionCheck = ContextCompat.checkSelfPermission(ViewEventDetails.this,
                                 android.Manifest.permission.ACCESS_FINE_LOCATION);
 
-                        // Add a marker in Sydney and move the camera
                         LatLng location = new LatLng(latitude, longitude);
                         map.addMarker(new MarkerOptions().position(location).title(address));
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-                        if (ActivityCompat.checkSelfPermission(ViewEventDetails.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ViewEventDetails.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.checkSelfPermission(ViewEventDetails.this,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(ViewEventDetails.this,
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
                         map.setMyLocationEnabled(true);
@@ -180,11 +179,12 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
-        final DatabaseReference mDatabaseRefEventP = mDatabaseEventP.child(itemKey);
+        final DatabaseReference mDatabaseRefEventP = mDatabase.child(itemKey).child("participants");
         final String user_id = mAuth.getCurrentUser().getUid();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (user_id != "") {
                     final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
 
@@ -194,31 +194,13 @@ public class ViewEventDetails extends AppCompatActivity {
                     myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mDatabaseRefEventP.child(user_id).setValue("Unassigned");
-                            try {
-                                Properties props = new Properties();
-                                props.put("mail.smtp.host", "smtp.gmail.com");
-                                props.put("mail.smtp.socketFactory.port", "465");
-                                props.put("mail.smtp.socketFactory.class", "java.net.ssl.SSLSocketFactory");
-                                props.put("mail.smtp.auth", "true");
-                                props.put("mail.smtp.port", "465");
-
-                                session = Session.getDefaultInstance(props, new Authenticator() {
-                                    @Override
-                                    protected PasswordAuthentication getPasswordAuthentication() {
-                                        return new PasswordAuthentication("hndeathchair@gmail.com", "20august");
-                                    }
-                                });
-
-                                pDialog = ProgressDialog.show(ViewEventDetails.this, "", "Registering for Event...", true);
-
-                                RetrieveFeedTask  task = new RetrieveFeedTask();
-                                task.execute();
-
-                            } catch (Exception e) {
-                                Log.e("SendMail", e.getMessage(), e);
-                            }
-                            dialog.dismiss();
+                            DatabaseReference mJoin = mDatabaseRefEventP.push();
+                            mJoin.setValue(user_id).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(ViewEventDetails.this, "Registration success", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     });
 
@@ -233,8 +215,6 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
-
-
         calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,88 +228,12 @@ public class ViewEventDetails extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
-                final DatabaseReference mDatabaseRefEmail = mDatabaseParticipant.child(user.getUid());
-
-                final DatabaseReference mDatabaseRefTitle = mDatabase.child(itemKey);
-                mDatabaseRefTitle.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        EVENT event = dataSnapshot.getValue(EVENT.class);
-                        String title = event.getTitle().toString().trim();
-                        Intent titleIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
-                        titleIntent.putExtra("title", title);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                mDatabaseRefEmail.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        PARTICIPANT participant = dataSnapshot.getValue(PARTICIPANT.class);
-                        final String participantEmail = participant.getEmail().toString().trim();
-                        Intent emailIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
-                        emailIntent.putExtra("participantEmail", participantEmail);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                mDatabaseRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        EVENT event = dataSnapshot.getValue(EVENT.class);
-                        final String organiser = event.getOrganiser().toString().trim();
-                        Toast.makeText(ViewEventDetails.this, organiser, Toast.LENGTH_LONG).show();
-                        Intent profileIntent = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
-                        profileIntent.putExtra("organiserKey", organiser);
-                        startActivity(profileIntent);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
+                String orgKey = tvOrgId.getText().toString();
+                Intent i = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                i.putExtra("key", orgKey.toString());
+                startActivity(i);
             }
         });
-    }
-
-    class RetrieveFeedTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress("hndeathchair@gmail.com"));
-                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("hiiamnew60@gmail.com"));
-                message.setContent("Testing", "text/html; charset=utf-8");
-
-            } catch(MessagingException e) {
-                e.printStackTrace();
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            pDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -346,9 +250,6 @@ public class ViewEventDetails extends AppCompatActivity {
                 finish();
                 return true;
         }
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -357,5 +258,19 @@ public class ViewEventDetails extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static String getCurrentTimeStamp(){
+        try {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+
+            return currentDateTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
     }
 }
