@@ -20,16 +20,14 @@ public class EVENT {
     private String endTime;
     private String head_chief;
     private String organiser;
-    private String pax;
     private String status;
     private String timeStamp;
-
+    private String eventType;
     public EVENT() {
 
     }
 
-    public EVENT(String pax,
-                 Double lat,
+    public EVENT(Double lat,
                  Double lng,
                  String title,
                  String image,
@@ -41,10 +39,10 @@ public class EVENT {
                  String startTime,
                  String organiser,
                  String timeStamp,
+                 String eventType,
                  String head_chief,
                  String description) {
 
-        this.pax = pax;
         this.lat = lat;
         this.lng = lng;
         this.title = title;
@@ -57,6 +55,7 @@ public class EVENT {
         this.startTime = startTime;
         this.organiser = organiser;
         this.timeStamp = timeStamp;
+        this.eventType = eventType;
         this.head_chief = head_chief;
         this.description = description;
 
@@ -134,14 +133,6 @@ public class EVENT {
         this.organiser = organiser;
     }
 
-    public String getPax() {
-        return pax;
-    }
-
-    public void setPax(String pax) {
-        this.pax = pax;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -181,4 +172,13 @@ public class EVENT {
     public void setLng(Double lng) {
         this.lng = lng;
     }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
 }
