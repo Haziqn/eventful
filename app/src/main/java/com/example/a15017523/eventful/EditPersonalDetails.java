@@ -1,18 +1,23 @@
 package com.example.a15017523.eventful;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -104,20 +109,34 @@ public class EditPersonalDetails extends AppCompatActivity {
                 mProgress.setMessage("Checking");
                 mProgress.show();
 
-                String age = editTextAge.getText().toString();
+                final String age = editTextAge.getText().toString();
 
                 if(field_verification(age, occupation, race, gender, categories)) {
 
-                    Intent intent = new Intent();
-                    intent.putExtra("age", age);
-                    intent.putExtra("occupation", occupation);
-                    intent.putExtra("gender", gender);
-                    intent.putExtra("race", race);
-                    intent.putExtra("interests", categories);
+                    LayoutInflater inflater = (LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LinearLayout passPhrase =
+                            (LinearLayout) inflater.inflate(R.layout.termsandconditions, null);
 
-                    setResult(RESULT_OK, intent);
-                    finish();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditPersonalDetails.this);
+                    builder.setTitle("Terms and Conditions")
+                            .setView(passPhrase)
+                            .setPositiveButton("I accept", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent();
+                                    intent.putExtra("age", age);
+                                    intent.putExtra("occupation", occupation);
+                                    intent.putExtra("gender", gender);
+                                    intent.putExtra("race", race);
+                                    intent.putExtra("interests", categories);
 
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
         });
