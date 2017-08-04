@@ -49,7 +49,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {
     Button buttonUpdate, buttonDelete;
-    EditText editName, editEmail, editTextAge, editTextPassword;
+    EditText editTextName, editTextEmail, editTextAge, editTextPassword;
     CircleImageView imageButton;
 
     Spinner spinnerOccupation, spinnerRace;
@@ -95,9 +95,9 @@ public class EditProfile extends AppCompatActivity {
         buttonUpdate = (Button)findViewById(R.id.btnUpdate);
         buttonDelete = (Button)findViewById(R.id.btnDelete);
 
-        editEmail = (EditText)findViewById(R.id.etEmailLogin);
-        editEmail.setClickable(false);
-        editName = (EditText)findViewById(R.id.etUserName);
+        editTextEmail = (EditText)findViewById(R.id.etEmailLogin);
+        editTextEmail.setClickable(false);
+        editTextName = (EditText)findViewById(R.id.etUserName);
         editTextAge = (EditText)findViewById(R.id.etAge);
         editTextPassword = (EditText)findViewById(R.id.etPasswordLogin);
         editTextPassword.setClickable(false);
@@ -171,8 +171,8 @@ public class EditProfile extends AppCompatActivity {
                     String user_name = dataSnapshot.child("user_name").getValue().toString();
                     String imagee = dataSnapshot.child("image").getValue().toString();
 
-                    editEmail.setText(user.getEmail());
-                    editName.setText(user_name);
+                    editTextEmail.setText(user.getEmail());
+                    editTextName.setText(user_name);
                     Picasso.with(getBaseContext()).load(imagee).into(imageButton);
 
                     SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -310,8 +310,8 @@ public class EditProfile extends AppCompatActivity {
         mProgress.setMessage("Please while we create your account!");
         mProgress.show();
 
-        String email = editEmail.getText().toString();
-        String name = editName.getText().toString();
+        String email = editTextEmail.getText().toString();
+        String name = editTextName.getText().toString();
         String age = editTextAge.getText().toString();
         final String password = editTextPassword.getText().toString();
         String encodePassword = encrypt_password(password);

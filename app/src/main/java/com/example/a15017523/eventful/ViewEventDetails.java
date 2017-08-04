@@ -47,7 +47,17 @@ import java.util.Date;
 
 public class ViewEventDetails extends AppCompatActivity {
 
-    TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType, tvOrgId;
+    TextView tvAddress,
+            tvDesc,
+            tvStartDate,
+            tvStartTime,
+            tvEndDate,
+            tvEndTime,
+            tvOrganiser,
+            tvHeadChief,
+            tvTitle,
+            tvTimeStamp,
+            tvOrgId;
     ImageView imageView;
     Button btnRegister;
     FirebaseAuth mAuth;
@@ -77,8 +87,6 @@ public class ViewEventDetails extends AppCompatActivity {
         tvHeadChief = (TextView)findViewById(R.id.tvHeadChief);
         tvAddress = (TextView)findViewById(R.id.tvAddress);
         tvTimeStamp = (TextView)findViewById(R.id.tvTimeStamp);
-        tvPax = (TextView)findViewById(R.id.tvPax);
-        tvType = (TextView)findViewById(R.id.tvEventType);
         tvOrgId = (TextView)findViewById(R.id.tvOrgId);
 
         imageView = (ImageView)findViewById(R.id.imageView2);
@@ -107,7 +115,6 @@ public class ViewEventDetails extends AppCompatActivity {
                 String head_chief = event.getHead_chief().toString().trim();
                 String pax = event.getPax().toString().trim();
                 String timeStamp = event.getTimeStamp().toString().trim();
-                String type = event.getEventType().toString().trim();
                 final String organiser = event.getOrganiser().toString().trim();
 
                 DatabaseReference mOrganiser = databaseReference.child("ORGANISER").child(organiser);
@@ -139,9 +146,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 tvDesc.setText(description);
                 tvHeadChief.setText("Event-in-charge: " + head_chief);
                 tvAddress.setText(address);
-                tvPax.setText(pax);
                 tvTimeStamp.setText(timeStamp);
-                tvType.setText(type);
                 tvOrgId.setText(organiser);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
 

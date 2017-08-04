@@ -25,7 +25,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextView textViewUsername, textViewEmail, textViewAge, textViewOccupation, textViewRace, textViewGender, textViewInterests;
+    TextView textViewUsername,
+            textViewEmail,
+            textViewAge,
+            textViewOccupation,
+            textViewRace,
+            textViewGender,
+            textViewInterests;
     Button buttonShare;
     CircleImageView imageButton;
 

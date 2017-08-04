@@ -78,7 +78,6 @@ public class MyEvents extends Fragment {
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setLocation(model.getLocation());
                 viewHolder.setOrganiser(organiser_name);
-                viewHolder.setPax(model.getPax());
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -128,12 +127,6 @@ public class MyEvents extends Fragment {
         public void setOrganiser(String organiser) {
             TextView organisers = (TextView)mView.findViewById(R.id.eventOrganiser);
             organisers.setText(organiser);
-        }
-
-
-        public void setPax(String pax) {
-            TextView paxes = (TextView)mView.findViewById(R.id.eventTickets);
-            paxes.setText(pax);
         }
 
     }

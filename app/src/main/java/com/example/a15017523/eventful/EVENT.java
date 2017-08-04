@@ -23,7 +23,7 @@ public class EVENT {
     private String pax;
     private String status;
     private String timeStamp;
-    private String eventType;
+
     public EVENT() {
 
     }
@@ -41,7 +41,6 @@ public class EVENT {
                  String startTime,
                  String organiser,
                  String timeStamp,
-                 String eventType,
                  String head_chief,
                  String description) {
 
@@ -58,7 +57,6 @@ public class EVENT {
         this.startTime = startTime;
         this.organiser = organiser;
         this.timeStamp = timeStamp;
-        this.eventType = eventType;
         this.head_chief = head_chief;
         this.description = description;
 
@@ -183,13 +181,4 @@ public class EVENT {
     public void setLng(Double lng) {
         this.lng = lng;
     }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
 }
