@@ -107,7 +107,6 @@ public class EditPersonalDetails extends AppCompatActivity {
 
                 mProgress.setTitle("Verifying inputs");
                 mProgress.setMessage("Checking");
-                mProgress.show();
 
                 final String age = editTextAge.getText().toString();
 
@@ -115,13 +114,19 @@ public class EditPersonalDetails extends AppCompatActivity {
 
                     LayoutInflater inflater = (LayoutInflater)
                             getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    LinearLayout passPhrase =
+                    LinearLayout dialog =
                             (LinearLayout) inflater.inflate(R.layout.termsandconditions, null);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(EditPersonalDetails.this);
                     builder.setTitle("Terms and Conditions")
-                            .setView(passPhrase)
-                            .setPositiveButton("I accept", new DialogInterface.OnClickListener() {
+                            .setView(dialog)
+                            .setNegativeButton("I disagree", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveButton("I agree", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
                                     Intent intent = new Intent();
@@ -133,6 +138,8 @@ public class EditPersonalDetails extends AppCompatActivity {
 
                                     setResult(RESULT_OK, intent);
                                     finish();
+
+                                    mProgress.show();
                                 }
                             });
                     AlertDialog alertDialog = builder.create();

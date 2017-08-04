@@ -108,7 +108,6 @@ public class SignUp extends AppCompatActivity {
                     galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_REQUEST);
                 } else {
-                    Toast.makeText(SignUp.this, "Permission has not been granted has not been granted", Toast.LENGTH_SHORT).show();
                     ActivityCompat.requestPermissions(SignUp.this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
                 }
