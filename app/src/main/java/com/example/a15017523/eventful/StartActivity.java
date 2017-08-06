@@ -36,7 +36,7 @@ public class StartActivity extends AppCompatActivity implements GoogleApiClient.
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private SignInButton signInButton;
-    private Button buttonSignIn, buttonSignUp, buttonSkip;
+    private Button buttonSignIn, buttonSignUp;
     private ProgressDialog progressDialog;
 
     private GoogleApiClient googleApiClient;
@@ -54,17 +54,8 @@ public class StartActivity extends AppCompatActivity implements GoogleApiClient.
 
         buttonSignIn = (Button)findViewById(R.id.btnSignIn);
         buttonSignUp = (Button)findViewById(R.id.btnSignUp);
-        buttonSkip = (Button)findViewById(R.id.btnSkip);
 
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        buttonSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(StartActivity.this, GuestMainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        });
 
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

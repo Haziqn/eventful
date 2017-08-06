@@ -35,9 +35,6 @@
         </activity>
         <activity android:name=".SignIn" />
         <activity android:name=".SignUp" />
-        <activity
-            android:name=".GuestMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".eventActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".ViewEventDetails" />
