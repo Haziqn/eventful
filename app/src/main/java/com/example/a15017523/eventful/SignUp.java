@@ -68,12 +68,6 @@ public class SignUp extends AppCompatActivity {
     String email = "";
     String password = "";
     String password2 = "";
-    String age = "";
-    String gender = "";
-    String race = "";
-    String occupation = "";
-
-    ArrayList<String> interests = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +121,7 @@ public class SignUp extends AppCompatActivity {
 
                 if (field_verification(name, email, password, password2, uri)) {
                     mProgress.hide();
-                    Intent intent = new Intent(SignUp.this, EditPersonalDetails.class);
-                    startActivityForResult(intent, 9);
+                    startRegister();
                 } else if (uri == null) {
                     Toast.makeText(SignUp.this, "Please select an image", Toast.LENGTH_SHORT).show();
                 } else {
@@ -165,11 +158,6 @@ public class SignUp extends AppCompatActivity {
                                     participant1.setPassword(encodePassword);
                                     participant1.setStatus("active");
                                     participant1.setUser_name(name);
-                                    participant1.setAge(age);
-                                    participant1.setOccupation(occupation);
-                                    participant1.setRace(race);
-                                    participant1.setGender(gender);
-                                    participant1.setInterests(interests);
                                     downloadUrl = task.getResult().getDownloadUrl().toString();
                                     participant1.setImage(downloadUrl);
                                     current_user_db.setValue(participant1).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -281,18 +269,19 @@ public class SignUp extends AppCompatActivity {
             else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
-        } else if (resultCode == RESULT_OK && requestCode == 9){
-            age = data.getStringExtra("age").toString();
-            race = data.getStringExtra("race").toString();
-            occupation = data.getStringExtra("occupation").toString();
-            gender = data.getStringExtra("gender").toString();
-            interests = data.getStringArrayListExtra("interests");
-            participant1.setAge(age);
-            participant1.setGender(gender);
-            participant1.setRace(race);
-            participant1.setOccupation(occupation);
-            participant1.setInterests(interests);
-            startRegister();
         }
+        // else if (resultCode == RESULT_OK && requestCode == 9){
+//            age = data.getStringExtra("age").toString();
+//            race = data.getStringExtra("race").toString();
+//            occupation = data.getStringExtra("occupation").toString();
+//            gender = data.getStringExtra("gender").toString();
+//            interests = data.getStringArrayListExtra("interests");
+//            participant1.setAge(age);
+//            participant1.setGender(gender);
+//            participant1.setRace(race);
+//            participant1.setOccupation(occupation);
+//            participant1.setInterests(interests);
+//            startRegister();
+//        }
     }
 }

@@ -49,19 +49,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfile extends AppCompatActivity {
     Button buttonUpdate, buttonDelete;
-    EditText editTextName, editTextEmail, editTextAge, editTextPassword;
+    EditText editTextName, editTextEmail;
     CircleImageView imageButton;
-
-    Spinner spinnerOccupation, spinnerRace;
-    CheckBox soccer, programming, ml, singing, photography;
-
-    RadioGroup rg;
-    RadioButton rb, radioButtonMale, radioButtonFemale;
-
-    String gender;
-    String race;
-    String occupation;
-    ArrayList<String> categories;
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
@@ -79,11 +68,17 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        editTextName = (EditText)findViewById(R.id.etUserName);
+        editTextEmail = (EditText)findViewById(R.id.etEmailLogin);
+        buttonUpdate = (Button)findViewById(R.id.btnUpdate);
+        buttonDelete = (Button)findViewById(R.id.btnDelete);
+        imageButton = (CircleImageView)findViewById(R.id.imageButtonUser);
+        editTextEmail.setClickable(false);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportActionBar().setTitle("Edit profile");
 
-        categories = new ArrayList<String>();
         mProgress = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
@@ -91,66 +86,6 @@ public class EditProfile extends AppCompatActivity {
         Storage = FirebaseStorage.getInstance().getReference();
 
         final FirebaseUser user = mAuth.getCurrentUser();
-
-        buttonUpdate = (Button)findViewById(R.id.btnUpdate);
-        buttonDelete = (Button)findViewById(R.id.btnDelete);
-
-        editTextEmail = (EditText)findViewById(R.id.etEmailLogin);
-        editTextEmail.setClickable(false);
-        editTextName = (EditText)findViewById(R.id.etUserName);
-        editTextAge = (EditText)findViewById(R.id.etAge);
-        editTextPassword = (EditText)findViewById(R.id.etPasswordLogin);
-        editTextPassword.setClickable(false);
-
-        soccer = (CheckBox)findViewById(R.id.cbSoccer);
-        programming = (CheckBox)findViewById(R.id.cbProgramming);
-        ml = (CheckBox)findViewById(R.id.cbML);
-        singing = (CheckBox)findViewById(R.id.cbSinging);
-        photography = (CheckBox)findViewById(R.id.cbPhotography);
-
-        rg = (RadioGroup) findViewById(R.id.rgGender);
-        int selectedButtonId = rg.getCheckedRadioButtonId();
-        rb = (RadioButton) findViewById(selectedButtonId);
-        radioButtonMale = (RadioButton)findViewById(R.id.rbMale);
-        radioButtonFemale = (RadioButton)findViewById(R.id.rbFemale);
-
-        gender = rb.getText().toString();
-
-        imageButton = (CircleImageView)findViewById(R.id.imageButtonUser);
-
-        spinnerOccupation = (Spinner) findViewById(R.id.spinnerOccupation);
-        ArrayAdapter<CharSequence> adapterOccupation = ArrayAdapter.createFromResource(this,
-                R.array.occupation_array, android.R.layout.simple_spinner_item);
-        adapterOccupation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerOccupation.setAdapter(adapterOccupation);
-        spinnerOccupation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                occupation = adapterView.getItemAtPosition(i).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                occupation = "";
-            }
-        });
-        spinnerRace = (Spinner) findViewById(R.id.spinnerRace);
-        ArrayAdapter<CharSequence> adapterRace = ArrayAdapter.createFromResource(this,
-                R.array.race_array, android.R.layout.simple_spinner_item);
-        adapterRace.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRace.setAdapter(adapterRace);
-        spinnerRace.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                race = adapterView.getItemAtPosition(i).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                race = "";
-            }
-        });
-
         final String uid = user.getUid();
 
         DatabaseReference mDatabaseRef = mDatabase.child(uid);
@@ -158,76 +93,17 @@ public class EditProfile extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Boolean name = dataSnapshot.hasChild("user_name");
-                Boolean image = dataSnapshot.hasChild("image");
-                Boolean age = dataSnapshot.hasChild("age");
-                Boolean interests = dataSnapshot.child("interests").hasChildren();
-                Boolean race = dataSnapshot.hasChild("race");
-                Boolean occupation = dataSnapshot.hasChild("occupation");
-                Boolean gender = dataSnapshot.hasChild("gender");
+                Boolean hasEmail = dataSnapshot.hasChild("email");
+                Boolean hasName = dataSnapshot.hasChild("user_name");
 
-                if (name && image) {
-
+                if (hasEmail && hasName) {
+                    String email = dataSnapshot.child("email").getValue().toString();
                     String user_name = dataSnapshot.child("user_name").getValue().toString();
-                    String imagee = dataSnapshot.child("image").getValue().toString();
 
-                    editTextEmail.setText(user.getEmail());
+                    editTextEmail.setText(email);
                     editTextName.setText(user_name);
-                    Picasso.with(getBaseContext()).load(imagee).into(imageButton);
-
-                    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-                    String password = prefs.getString("password", null);
-                    if (password != null) {
-                        editTextPassword.setText(password);
-                    }
-                } else if (age && interests && race && occupation && gender) {
-
-                    String race2 = dataSnapshot.child("race").getValue().toString();
-                    String age2 = dataSnapshot.child("age").getValue().toString();
-                    ArrayList<String> interests2 = (ArrayList<String>) dataSnapshot.child("interests").getValue();
-                    String occupation2 = dataSnapshot.child("occupation").getValue().toString();
-                    String gender2 = dataSnapshot.child("gender").getValue().toString();
-                    editTextAge.setText(age2);
-
-                    for (int i = 0; i < interests2.size(); i++) {
-                        Log.d("interests", interests2.get(i).toString());
-                        if (interests2.get(i).toString() == "Soccer") {
-                            programming.setChecked(false);
-                            ml.setChecked(false);
-                            singing.setChecked(false);
-                            photography.setChecked(false);
-                        } else if (interests2.get(i).toString() == "Programming") {
-                            soccer.setChecked(false);
-                            ml.setChecked(false);
-                            singing.setChecked(false);
-                            photography.setChecked(false);
-                        } else if (interests2.get(i).toString() == "Mobile Legends") {
-                            soccer.setChecked(false);
-                            programming.setChecked(false);
-                            singing.setChecked(false);
-                            photography.setChecked(false);
-                        } else if (interests2.get(i).toString() == "Singing") {
-                            soccer.setChecked(false);
-                            programming.setChecked(false);
-                            ml.setChecked(false);
-                            photography.setChecked(false);
-                        } else if (interests2.get(i).toString() == "Photography") {
-                            soccer.setChecked(false);
-                            programming.setChecked(false);
-                            ml.setChecked(false);
-                            singing.setChecked(false);
-                        }
-                    }
-
-                    if (gender2 == "Male") {
-                        radioButtonMale.setChecked(true);
-                        radioButtonFemale.setChecked(false);
-                    } else if (gender2 == "Female") {
-                        radioButtonFemale.setChecked(true);
-                        radioButtonMale.setChecked(false);
-                    }
-
                 }
+
             }
 
             @Override
@@ -312,19 +188,6 @@ public class EditProfile extends AppCompatActivity {
 
         String email = editTextEmail.getText().toString();
         String name = editTextName.getText().toString();
-        String age = editTextAge.getText().toString();
-        final String password = editTextPassword.getText().toString();
-        String encodePassword = encrypt_password(password);
-
-        final PARTICIPANT participant = new PARTICIPANT();
-        participant.setAge(age);
-        participant.setInterests(categories);
-        participant.setRace(race);
-        participant.setOccupation(occupation);
-        participant.setGender(gender);
-        participant.setUser_name(name);
-        participant.setEmail(email);
-        participant.setPassword(encodePassword);
 
         String uid = mAuth.getCurrentUser().getUid();
 
@@ -335,93 +198,12 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()) {
-                    userdb.setValue(participant).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                            editor.putString("password", password);
-                            editor.commit();
-                            mProgress.dismiss();
-                            finish();
-                        }
-                    });
+
                 } else {
                     Toast.makeText(EditProfile.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
-
-    private String encrypt_password(String password) {
-        SecretKeySpec sks = null;
-        try {
-            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-            sr.setSeed("any data used as random seed".getBytes());
-            KeyGenerator kg = KeyGenerator.getInstance("AES");
-            kg.init(128, sr);
-            sks = new SecretKeySpec((kg.generateKey()).getEncoded(), "AES");
-        } catch (Exception e) {
-            Log.e("Password", "AES secret key spec error");
-        }
-
-        // Encode the original data with AES
-        byte[] encodedBytes = null;
-        try {
-            Cipher c = Cipher.getInstance("AES");
-            c.init(Cipher.ENCRYPT_MODE, sks);
-            encodedBytes = c.doFinal(password.getBytes());
-        } catch (Exception e) {
-            Log.e("Password", "AES encryption error");
-        }
-        return Base64.encodeToString(encodedBytes, Base64.DEFAULT);
-    }
-
-    public void onCheckboxClicked(View view) {
-        // Is the view now checked?
-        boolean checked = ((CheckBox) view).isChecked();
-
-        // Check which checkbox was clicked
-        switch (view.getId()) {
-            case R.id.cbSoccer:
-                if (!checked) {
-                    categories.remove(soccer.getText().toString());
-                } else {
-                    categories.add(soccer.getText().toString());
-                    break;
-                }
-
-            case R.id.cbProgramming:
-                if (!checked) {
-                    categories.remove(programming.getText().toString());
-                } else {
-                    categories.add(programming.getText().toString());
-                    break;
-                }
-
-            case R.id.cbML:
-                if (!checked) {
-                    categories.remove(ml.getText().toString());
-                } else {
-                    categories.add(ml.getText().toString());
-                    break;
-                }
-
-            case R.id.cbSinging:
-                if (!checked) {
-                    categories.remove(singing.getText().toString());
-                } else {
-                    categories.add(singing.getText().toString());
-                    break;
-                }
-
-            case R.id.cbPhotography:
-                if (!checked) {
-                    categories.remove(photography.getText().toString());
-                } else {
-                    categories.add(photography.getText().toString());
-                    break;
-                }
-        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

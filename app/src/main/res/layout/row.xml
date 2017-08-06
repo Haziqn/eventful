@@ -71,12 +71,6 @@
                         android:text="Location"
                         android:textStyle="bold" />
 
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/cardview_shadow_start_color" />
-
                     <TextView
                         android:id="@+id/eventAddress"
                         style="@style/ContentImageBadgeText"
@@ -92,28 +86,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnShare"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/ic_menu_share" />
-            </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>

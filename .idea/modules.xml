@@ -3,18 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/activation/activation.iml" filepath="$PROJECT_DIR$/activation/activation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/activation/activation.iml" filepath="$PROJECT_DIR$/activation/activation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/activationjar/activationjar.iml" filepath="$PROJECT_DIR$/activationjar/activationjar.iml" />
       <module fileurl="file://$PROJECT_DIR$/activationjar/activationjar.iml" filepath="$PROJECT_DIR$/activationjar/activationjar.iml" />
       <module fileurl="file://$PROJECT_DIR$/additionnal/additionnal.iml" filepath="$PROJECT_DIR$/additionnal/additionnal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/additionnal/additionnal.iml" filepath="$PROJECT_DIR$/additionnal/additionnal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/additionnaljar/additionnaljar.iml" filepath="$PROJECT_DIR$/additionnaljar/additionnaljar.iml" />
       <module fileurl="file://$PROJECT_DIR$/additionnaljar/additionnaljar.iml" filepath="$PROJECT_DIR$/additionnaljar/additionnaljar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/eventful.iml" filepath="$PROJECT_DIR$/eventful.iml" />
       <module fileurl="file://$PROJECT_DIR$/mail/mail.iml" filepath="$PROJECT_DIR$/mail/mail.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mail/mail.iml" filepath="$PROJECT_DIR$/mail/mail.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mailjar/mailjar.iml" filepath="$PROJECT_DIR$/mailjar/mailjar.iml" />
       <module fileurl="file://$PROJECT_DIR$/mailjar/mailjar.iml" filepath="$PROJECT_DIR$/mailjar/mailjar.iml" />
     </modules>
   </component>
