@@ -27,7 +27,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileActivity extends AppCompatActivity {
 
     TextView textViewUsername, textViewEmail;
-    Button buttonShare;
     CircleImageView imageButton;
 
     FirebaseAuth mAuth;
@@ -51,7 +50,6 @@ public class ProfileActivity extends AppCompatActivity {
         textViewUsername = (TextView) findViewById(R.id.tvUsername);
 
         imageButton = (CircleImageView) findViewById(R.id.imageButtonUser);
-        buttonShare = (Button) findViewById(R.id.btnShare);
 
         final FirebaseUser user = mAuth.getCurrentUser();
         final String uid = user.getUid();
