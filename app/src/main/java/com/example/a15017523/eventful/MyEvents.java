@@ -93,33 +93,35 @@ public class MyEvents extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//                Log.i("MainActivity", "onChildChanged()");
-//
-//                String selectedId = dataSnapshot.getKey();
-//                Student student = dataSnapshot.getValue(Student.class);
-//                if (student != null) {
-//                    for (int i = 0; i < alStudent.size(); i++) {
-//                        if (alStudent.get(i).getId().equals(selectedId)) {
-//                            student.setId(selectedId);
-//                            alStudent.set(i, student);
-//                        }
-//                    }
-//                    aaStudent.notifyDataSetChanged();
-//
-//                }
+                Log.i("MainActivity", "onChildChanged()");
+
+                JOIN join = dataSnapshot.getValue(JOIN.class);
+                String selectedId = join.getId();
+                if (join != null) {
+                    for (int i = 0; i < alJOIN.size(); i++) {
+                        if (alJOIN.get(i).getId().equals(selectedId)) {
+                            join.setRef(dataSnapshot.getKey());
+                            alJOIN.set(i, join);
+                        }
+                    }
+                    aaJOIN.notifyDataSetChanged();
+
+                }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.i("MainActivity", "onChildRemoved()");
 
-//                String selectedId = dataSnapshot.getKey();
-//                for(int i= 0; i < alJOIN.size(); i++) {
-//                    if (alJOIN.get(i).getId().equals(selectedId)) {
-//                        alJOIN.remove(i);
-//                    }
-//                }
-//                aaJOIN.notifyDataSetChanged();
+                JOIN join = dataSnapshot.getValue(JOIN.class);
+                String selectedId = join.getId();
+                for(int i= 0; i < alJOIN.size(); i++) {
+                    if (alJOIN.get(i).getId().equals(selectedId)) {
+                        alJOIN.remove(i);
+                    }
+                }
+                aaJOIN.notifyDataSetChanged();
+
 
             }
 
@@ -146,7 +148,7 @@ public class MyEvents extends Fragment {
                 Intent intent = new Intent(getContext(), ViewMYEventDetails.class);
                 intent.putExtra("key", id);
                 intent.putExtra("ref", ref);
-                startActivityForResult(intent, 1);
+                startActivity(intent);
             }
         });
 
