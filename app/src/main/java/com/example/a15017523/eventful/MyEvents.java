@@ -57,7 +57,7 @@ public class MyEvents extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        
     }
 
     @Override

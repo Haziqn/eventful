@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -43,7 +44,8 @@ public class ViewEventDetails extends AppCompatActivity {
     LinearLayout calender, profile;
 
     String organiser_name;
-
+    String org_id;
+    String organiser_email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +96,9 @@ public class ViewEventDetails extends AppCompatActivity {
                 String head_chief = event.getHead_chief().toString().trim();
                 String timeStamp = event.getTimeStamp().toString().trim();
                 String type = event.getEventType().toString().trim();
-                final String organiser = event.getOrganiser().toString().trim();
+                org_id = event.getOrganiser().toString().trim();
 
-                DatabaseReference mOrganiser = databaseReference.child("ORGANISER").child(organiser);
+                DatabaseReference mOrganiser = databaseReference.child("ORGANISER").child(org_id);
                 mOrganiser.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -127,7 +129,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 tvAddress.setText(address);
                 tvTimeStamp.setText(timeStamp);
                 tvType.setText(type);
-                tvOrgId.setText(organiser);
+                tvOrgId.setText(org_id);
                 Picasso.with(getBaseContext()).load(image).into(imageView);
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -178,6 +180,7 @@ public class ViewEventDetails extends AppCompatActivity {
                     myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                             databaseReference.child("EVENT_PARTICIPANTS").child(itemKey).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -198,6 +201,8 @@ public class ViewEventDetails extends AppCompatActivity {
                                         messageMap.put("EVENT_PARTICIPANTS/" + user_id + "/" + push_id, join1);
 
                                         databaseReference.updateChildren(messageMap);
+
+                                        sendEmail(push_id, title);
                                     } else {
                                         Toast.makeText(ViewEventDetails.this, "You have signed up for this", Toast.LENGTH_LONG).show();
                                     }
@@ -255,5 +260,58 @@ public class ViewEventDetails extends AppCompatActivity {
 
             return null;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void sendEmail(String key, final String name) {
+
+        DatabaseReference mOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER").child(org_id);
+        mOrganiser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                organiser_email = dataSnapshot.child("email").getValue().toString();
+
+//Getting content for email
+                String email1 = organiser_email;
+
+                String subject1 = name;
+                String message1 = "You have new participant for event - " + name + ".";
+
+                //Creating SendMail object
+                SendMail sm1 = new SendMail(getBaseContext(), email1, subject1, message1);
+
+                //Executing sendmail to send email
+                sm1.execute();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        //Getting content for email
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail().toString().trim();
+        String subject = "Registration success for " + name;
+        String message = "You have successfully registered for an event. Your registration key is " + key + ". Please present this key to the organiser to mark your attendance" ;
+
+        //Creating SendMail object
+        SendMail sm = new SendMail(this, email, subject, message);
+
+        //Executing sendmail to send email
+        sm.execute();
+
+
     }
 }
