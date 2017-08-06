@@ -9,12 +9,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,12 +29,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-public class ViewEventDetails extends AppCompatActivity {
+public class ViewMYEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType, tvOrgId;
     ImageView imageView;
@@ -41,13 +38,13 @@ public class ViewEventDetails extends AppCompatActivity {
     FirebaseAuth mAuth;
     private GoogleMap map;
     LinearLayout calender, profile;
-
+    String ref;
     String organiser_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_event_details);
+        setContentView(R.layout.activity_view_myevent_details);
 
         setTitle("");
 
@@ -80,6 +77,7 @@ public class ViewEventDetails extends AppCompatActivity {
 
         Intent i = getIntent();
         final String itemKey = i.getStringExtra("key");
+        ref = i.getStringExtra("ref");
 
         final DatabaseReference mDatabaseRef = mDatabase.child(itemKey);
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -135,15 +133,15 @@ public class ViewEventDetails extends AppCompatActivity {
                     public void onMapReady(GoogleMap googleMap) {
                         map = googleMap;
 
-                        int permissionCheck = ContextCompat.checkSelfPermission(ViewEventDetails.this,
+                        int permissionCheck = ContextCompat.checkSelfPermission(ViewMYEventDetails.this,
                                 android.Manifest.permission.ACCESS_FINE_LOCATION);
 
                         LatLng location = new LatLng(latitude, longitude);
                         map.addMarker(new MarkerOptions().position(location).title(address));
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-                        if (ActivityCompat.checkSelfPermission(ViewEventDetails.this,
+                        if (ActivityCompat.checkSelfPermission(ViewMYEventDetails.this,
                                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                                && ActivityCompat.checkSelfPermission(ViewEventDetails.this,
+                                && ActivityCompat.checkSelfPermission(ViewMYEventDetails.this,
                                 android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
@@ -170,53 +168,22 @@ public class ViewEventDetails extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (user_id != "") {
-                    final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
+                    final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewMYEventDetails.this);
 
-                    myBuilder.setTitle("Confirm Registration");
-                    myBuilder.setMessage("An email will be sent to you upon confirmation of registration.");
+                    myBuilder.setTitle("Cancel Registration");
+                    myBuilder.setMessage("Are you sure?");
                     myBuilder.setCancelable(false);
-                    myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            databaseReference.child("EVENT_PARTICIPANTS").child(itemKey).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                    if(!dataSnapshot.child(itemKey).hasChild(user_id)) {
-                                        String title = tvTitle.getText().toString().trim();
-                                        JOIN join1 = new JOIN();
-                                        join1.setDatetime(getCurrentTimeStamp());
-                                        join1.setId(itemKey);
-                                        join1.setStatus("pending");
-                                        join1.setName(title);
-
-                                        DatabaseReference push = databaseReference.child("EVENT_PARTICIPANTS").child(itemKey).child(user_id).push();
-                                        String push_id = push.getKey();
-
-                                        Map messageMap = new HashMap();
-//                                        messageMap.put("EVENT_PARTICIPANTS/" + itemKey+ "/" + user_id + "/" + push_id, "status");
-                                        messageMap.put("EVENT_PARTICIPANTS/" + user_id + "/" + push_id, join1);
-
-                                        databaseReference.updateChildren(messageMap);
-                                    } else {
-                                        Toast.makeText(ViewEventDetails.this, "You have signed up for this", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                            databaseReference.child("EVENT_PARTICIPANTS").child(user_id).child(ref).removeValue();
                         }
                     });
 
-                    myBuilder.setNegativeButton("Cancel", null);
+                    myBuilder.setNegativeButton("No", null);
 
                     AlertDialog myDialog = myBuilder.create();
                     myDialog.show();
-                } else {
-                    Toast.makeText(ViewEventDetails.this, "You need to be logged in to register for events!", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -236,24 +203,45 @@ public class ViewEventDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String orgKey = tvOrgId.getText().toString();
-                Intent i = new Intent(ViewEventDetails.this, OrganiserProfileActivity.class);
+                Intent i = new Intent(ViewMYEventDetails.this, OrganiserProfileActivity.class);
                 i.putExtra("key", orgKey.toString());
                 startActivity(i);
             }
         });
     }
 
-    public static String getCurrentTimeStamp(){
-        try {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.viewmyevent, menu);
+        return true;
+    }
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentDateTime = dateFormat.format(new Date()); // Find todays date
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-            return currentDateTime;
-        } catch (Exception e) {
-            e.printStackTrace();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_showKey) {
+            final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewMYEventDetails.this);
 
-            return null;
+            myBuilder.setTitle("Your registration Key");
+            myBuilder.setMessage(ref);
+
+            myBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            AlertDialog myDialog = myBuilder.create();
+            myDialog.show();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 }

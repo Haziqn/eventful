@@ -58,7 +58,7 @@ public class All extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            organiser_name = dataSnapshot.child("user_name").getValue().toString();
+//                            organiser_name = dataSnapshot.child("user_name").getValue().toString();
 
                     }
 

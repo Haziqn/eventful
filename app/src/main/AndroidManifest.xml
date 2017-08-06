@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -47,7 +47,8 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".EditProfile" />
         <activity android:name=".EditPersonalDetails" />
-        <activity android:name=".OrganiserProfileActivity"></activity>
+        <activity android:name=".OrganiserProfileActivity" />
+        <activity android:name=".ViewMYEventDetails"></activity>
     </application>
 
 </manifest>
