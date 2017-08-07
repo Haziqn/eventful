@@ -27,9 +27,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +44,9 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
@@ -52,15 +57,14 @@ public class EditProfile extends AppCompatActivity {
     EditText editTextName, editTextEmail;
     CircleImageView imageButton;
 
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
-
     ProgressDialog mProgress;
 
     private Uri uri = null;
-    public String downloadUrl = "";
+
     final int GALLERY_REQUEST = 1;
     FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
+    String userid;
+    DatabaseReference mDatabase, databaseReference;
     StorageReference Storage;
 
     @Override
@@ -73,7 +77,7 @@ public class EditProfile extends AppCompatActivity {
         buttonUpdate = (Button)findViewById(R.id.btnUpdate);
         buttonDelete = (Button)findViewById(R.id.btnDelete);
         imageButton = (CircleImageView)findViewById(R.id.imageButtonUser);
-        editTextEmail.setClickable(false);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -82,7 +86,9 @@ public class EditProfile extends AppCompatActivity {
         mProgress = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("PARTICIPANT");
+        userid = mAuth.getCurrentUser().getUid();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabase = databaseReference.child("PARTICIPANT");
         Storage = FirebaseStorage.getInstance().getReference();
 
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -93,15 +99,14 @@ public class EditProfile extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Boolean hasEmail = dataSnapshot.hasChild("email");
                 Boolean hasName = dataSnapshot.hasChild("user_name");
 
-                if (hasEmail && hasName) {
-                    String email = dataSnapshot.child("email").getValue().toString();
+                if (hasName) {
                     String user_name = dataSnapshot.child("user_name").getValue().toString();
+                    String image = dataSnapshot.child("image").getValue().toString();
 
-                    editTextEmail.setText(email);
                     editTextName.setText(user_name);
+                    Picasso.with(EditProfile.this).load(image).into(imageButton);
                 }
 
             }
@@ -130,23 +135,53 @@ public class EditProfile extends AppCompatActivity {
                 myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String user_id = mAuth.getCurrentUser().getUid();
-                        final DatabaseReference current_user_db = mDatabase.child(user_id);
-                        current_user_db.child("status").setValue("deactivated").addOnCompleteListener(new OnCompleteListener<Void>() {
+                        databaseReference.child("EVENT_PARTICIPANTS")
+                                .child("EVENT_PARTICIPANTS").child(uid).addChildEventListener(new ChildEventListener() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                user.delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d("EditProfile", "User account deleted.");
-                                                }
-                                            }
-                                        });
-                                Intent i = new Intent(EditProfile.this, StartActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(i);
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                if(dataSnapshot.hasChildren()) {
+                                    Toast.makeText(EditProfile.this, "You have currently joined events! Please leave all current events.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    String user_id = mAuth.getCurrentUser().getUid();
+                                    final DatabaseReference current_user_db = mDatabase.child(user_id);
+                                    current_user_db.child("status").setValue("deactivated").addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            user.delete()
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("EditProfile", "User account deleted.");
+                                                            }
+                                                        }
+                                                    });
+                                            Intent i = new Intent(EditProfile.this, StartActivity.class);
+                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(i);
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
                             }
                         });
 
@@ -182,23 +217,28 @@ public class EditProfile extends AppCompatActivity {
 
     public void updateUserInfo() {
 
-        mProgress.setTitle("Registering User");
-        mProgress.setMessage("Please while we create your account!");
+        mProgress.setTitle("Updating User");
+        mProgress.setMessage("Please while we update your account!");
         mProgress.show();
 
-        String email = editTextEmail.getText().toString();
-        String name = editTextName.getText().toString();
-
-        String uid = mAuth.getCurrentUser().getUid();
-
-        final DatabaseReference userdb = mDatabase.child(uid);
+        final String email = editTextEmail.getText().toString();
+        final String name = editTextName.getText().toString();
+        final DatabaseReference userdb = mDatabase.child(userid);
 
         StorageReference filepath = Storage.child("User_Image").child(uri.getLastPathSegment());
         filepath.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()) {
-
+                    Map map = new HashMap();
+                    map.put("PARTICIPANT/" + userid + "/user_name", name);
+                    map.put("PARTICIPANT/" + userid + "/image", task.getResult().getDownloadUrl().toString());
+                    databaseReference.updateChildren(map).addOnSuccessListener(new OnSuccessListener() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mProgress.dismiss();
+                        }
+                    });
                 } else {
                     Toast.makeText(EditProfile.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -267,36 +307,6 @@ public class EditProfile extends AppCompatActivity {
             myDialog.show();
             return true;
         }
-
-        if (id == R.id.reset_email) {
-            AlertDialog.Builder myBuilder = new AlertDialog.Builder(EditProfile.this);
-
-            myBuilder.setTitle("Reset Email");
-            myBuilder.setMessage("An email will be sent to you shortly!");
-            myBuilder.setCancelable(false);
-            myBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                    user.updateEmail(user.getEmail())
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Log.d("EditProfile", "User email address updated.");
-                                    }
-                                }
-                            });
-                }
-            });
-            myBuilder.setNegativeButton("Cancel", null);
-
-            AlertDialog myDialog = myBuilder.create();
-            myDialog.show();
-            return true;
-        }
-
         if (id == R.id.verify_email) {
             AlertDialog.Builder myBuilder = new AlertDialog.Builder(EditProfile.this);
 
@@ -312,10 +322,13 @@ public class EditProfile extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d("EditProfile", "Email sent.");
+                                        Log.d("EditProfile", "Verification Email successfully sent.");
+                                    } else if (!task.isSuccessful()) {
+                                        Toast.makeText(EditProfile.this, task.getException().toString(), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
+
                 }
             });
             myBuilder.setNegativeButton("Cancel", null);

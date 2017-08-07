@@ -57,9 +57,9 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     testCompile 'junit:junit:4.12'
-    compile files('lib/activation.jar')
-    compile files('lib/additionnal.jar')
-    compile files('lib/mail.jar')
+    compile files('libs/activation.jar')
+    compile files('libs/additionnal.jar')
+    compile files('libs/mail.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

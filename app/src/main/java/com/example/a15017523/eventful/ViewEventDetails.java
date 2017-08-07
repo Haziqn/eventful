@@ -4,11 +4,13 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +24,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -166,60 +171,92 @@ public class ViewEventDetails extends AppCompatActivity {
             }
         });
 
-        final String user_id = mAuth.getCurrentUser().getUid();
+        final FirebaseUser user = mAuth.getCurrentUser();
+        final String user_id = user.getUid();
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (user_id != "") {
-                    final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
+                    if(user.isEmailVerified()) {
+                        final AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
 
-                    myBuilder.setTitle("Confirm Registration");
-                    myBuilder.setMessage("An email will be sent to you upon confirmation of registration.");
-                    myBuilder.setCancelable(false);
-                    myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        myBuilder.setTitle("Confirm Registration");
+                        myBuilder.setMessage("An email will be sent to you upon confirmation of registration.");
+                        myBuilder.setCancelable(false);
+                        myBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                            databaseReference.child("EVENT_PARTICIPANTS").child(itemKey).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                databaseReference.child("EVENT_PARTICIPANTS").child("EVENT_PARTICIPANTS").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    if(!dataSnapshot.child(itemKey).hasChild(user_id)) {
-                                        String title = tvTitle.getText().toString().trim();
-                                        JOIN join1 = new JOIN();
-                                        join1.setDatetime(getCurrentTimeStamp());
-                                        join1.setId(itemKey);
-                                        join1.setStatus("pending");
-                                        join1.setName(title);
+                                        if(dataSnapshot.child(itemKey).hasChild(user_id)) {
+                                            Toast.makeText(ViewEventDetails.this, "You have already signed up for this", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            String title = tvTitle.getText().toString().trim();
+                                            JOIN join1 = new JOIN();
+                                            join1.setDatetime(getCurrentTimeStamp());
+                                            join1.setId(itemKey);
+                                            join1.setStatus("pending");
+                                            join1.setName(title);
 
-                                        DatabaseReference push = databaseReference.child("EVENT_PARTICIPANTS").child(itemKey).child(user_id).push();
-                                        String push_id = push.getKey();
+                                            DatabaseReference push = databaseReference.push();
+                                            String push_id = push.getKey();
 
-                                        Map messageMap = new HashMap();
-//                                        messageMap.put("EVENT_PARTICIPANTS/" + itemKey+ "/" + user_id + "/" + push_id, "status");
-                                        messageMap.put("EVENT_PARTICIPANTS/" + user_id + "/" + push_id, join1);
+                                            Map messageMap = new HashMap();
+                                            messageMap.put("EVENT_PARTICIPANTS/" + itemKey + "/" + user_id + "/" + push_id, "pending");
+                                            messageMap.put("EVENT_PARTICIPANTS/" + user_id + "/" + push_id, join1);
 
-                                        databaseReference.updateChildren(messageMap);
+                                            databaseReference.child("EVENT_PARTICIPANTS").updateChildren(messageMap);
 
-                                        sendEmail(push_id, title);
-                                    } else {
-                                        Toast.makeText(ViewEventDetails.this, "You have signed up for this", Toast.LENGTH_LONG).show();
+                                            sendEmail(push_id, title);
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
+                            }
+                        });
 
-                                }
-                            });
-                        }
-                    });
+                        myBuilder.setNegativeButton("Cancel", null);
 
-                    myBuilder.setNegativeButton("Cancel", null);
+                        AlertDialog myDialog = myBuilder.create();
+                        myDialog.show();
+                    } else {
+                        AlertDialog.Builder myBuilder = new AlertDialog.Builder(ViewEventDetails.this);
 
-                    AlertDialog myDialog = myBuilder.create();
-                    myDialog.show();
+                        myBuilder.setTitle("Your email is not verified!");
+                        myBuilder.setMessage("Please verify your email before joining any events");
+                        myBuilder.setCancelable(false);
+                        myBuilder.setPositiveButton("Send Email", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                user.sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d("ViewEventDetails", "Verification Email successfully sent.");
+                                                } else if (!task.isSuccessful()) {
+                                                    Toast.makeText(ViewEventDetails.this, task.getException().toString(), Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+
+                            }
+                        });
+                        myBuilder.setNegativeButton("Cancel", null);
+
+                        AlertDialog myDialog = myBuilder.create();
+                        myDialog.show();
+
+                    }
                 } else {
                     Toast.makeText(ViewEventDetails.this, "You need to be logged in to register for events!", Toast.LENGTH_LONG).show();
                 }

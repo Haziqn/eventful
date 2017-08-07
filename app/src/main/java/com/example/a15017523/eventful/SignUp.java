@@ -175,7 +175,7 @@ public class SignUp extends AppCompatActivity {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
-                                                                    Log.d(TAG, "Email sent.");
+                                                                    Log.d(TAG, "Verification Email successfully sent.");
                                                                 }
                                                             }
                                                         });
