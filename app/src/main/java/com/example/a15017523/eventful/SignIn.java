@@ -91,6 +91,7 @@ public class SignIn extends AppCompatActivity {
                         startActivity(intent);
                     } else {
                         Log.e("ERROR", task.getException().toString());
+                        progressDialog.dismiss();
                     }
 
                 }

@@ -270,18 +270,5 @@ public class SignUp extends AppCompatActivity {
                 Exception error = result.getError();
             }
         }
-        // else if (resultCode == RESULT_OK && requestCode == 9){
-//            age = data.getStringExtra("age").toString();
-//            race = data.getStringExtra("race").toString();
-//            occupation = data.getStringExtra("occupation").toString();
-//            gender = data.getStringExtra("gender").toString();
-//            interests = data.getStringArrayListExtra("interests");
-//            participant1.setAge(age);
-//            participant1.setGender(gender);
-//            participant1.setRace(race);
-//            participant1.setOccupation(occupation);
-//            participant1.setInterests(interests);
-//            startRegister();
-//        }
     }
 }
