@@ -74,69 +74,75 @@ public class MyEvents extends Fragment {
         lv.setAdapter(aaJOIN);
 
         auth = FirebaseAuth.getInstance();
-        String uid = auth.getCurrentUser().getUid();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseref = firebaseDatabase.getReference("EVENT_PARTICIPANTS").child(uid);
+        final FirebaseUser user = auth.getCurrentUser();
 
-        databaseref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        if (user != null) {
 
-                Log.i("MainActivity", "onChildAdded()");
-                JOIN join = dataSnapshot.getValue(JOIN.class);
-                if (join != null) {
-                    join.setRef(dataSnapshot.getKey());
-                    alJOIN.add(join);
-                    aaJOIN.notifyDataSetChanged();
+            String uid = user.getUid();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            databaseref = firebaseDatabase.getReference("EVENT_PARTICIPANTS").child(uid);
+
+            databaseref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                    Log.i("MainActivity", "onChildAdded()");
+                    JOIN join = dataSnapshot.getValue(JOIN.class);
+                    if (join != null) {
+                        join.setRef(dataSnapshot.getKey());
+                        alJOIN.add(join);
+                        aaJOIN.notifyDataSetChanged();
+                    }
                 }
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.i("MainActivity", "onChildChanged()");
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Log.i("MainActivity", "onChildChanged()");
 
-                JOIN join = dataSnapshot.getValue(JOIN.class);
-                String selectedId = join.getId();
-                if (join != null) {
-                    for (int i = 0; i < alJOIN.size(); i++) {
+                    JOIN join = dataSnapshot.getValue(JOIN.class);
+                    String selectedId = join.getId();
+                    if (join != null) {
+                        for (int i = 0; i < alJOIN.size(); i++) {
+                            if (alJOIN.get(i).getId().equals(selectedId)) {
+                                join.setRef(dataSnapshot.getKey());
+                                alJOIN.set(i, join);
+                            }
+                        }
+                        aaJOIN.notifyDataSetChanged();
+
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Log.i("MainActivity", "onChildRemoved()");
+
+                    JOIN join = dataSnapshot.getValue(JOIN.class);
+                    String selectedId = join.getId();
+                    for(int i= 0; i < alJOIN.size(); i++) {
                         if (alJOIN.get(i).getId().equals(selectedId)) {
-                            join.setRef(dataSnapshot.getKey());
-                            alJOIN.set(i, join);
+                            alJOIN.remove(i);
                         }
                     }
                     aaJOIN.notifyDataSetChanged();
 
+
                 }
-            }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.i("MainActivity", "onChildRemoved()");
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    Log.i("MainActivity", "onChildMoved()");
 
-                JOIN join = dataSnapshot.getValue(JOIN.class);
-                String selectedId = join.getId();
-                for(int i= 0; i < alJOIN.size(); i++) {
-                    if (alJOIN.get(i).getId().equals(selectedId)) {
-                        alJOIN.remove(i);
-                    }
                 }
-                aaJOIN.notifyDataSetChanged();
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("MainActivity", "Database error occurred", databaseError.toException());
 
-            }
+                }
+            });
+        }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                Log.i("MainActivity", "onChildMoved()");
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("MainActivity", "Database error occurred", databaseError.toException());
-
-            }
-        });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

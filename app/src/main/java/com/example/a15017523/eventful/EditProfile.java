@@ -12,6 +12,7 @@ import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -95,13 +96,16 @@ public class EditProfile extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Boolean hasEmail = dataSnapshot.hasChild("email");
                 Boolean hasName = dataSnapshot.hasChild("user_name");
+                Boolean hasImage = dataSnapshot.hasChild("image");
 
-                if (hasEmail && hasName) {
+                if (hasEmail && hasName && hasImage) {
+                    String image = dataSnapshot.child("image").getValue().toString();
                     String email = dataSnapshot.child("email").getValue().toString();
                     String user_name = dataSnapshot.child("user_name").getValue().toString();
 
                     editTextEmail.setText(email);
                     editTextName.setText(user_name);
+                    Picasso.with(EditProfile.this).load(image).into(imageButton);
                 }
 
             }
@@ -115,7 +119,17 @@ public class EditProfile extends AppCompatActivity {
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateUserInfo();
+                final String name = editTextName.getText().toString().trim();
+                final String email = editTextEmail.getText().toString().trim();
+
+                if (TextUtils.isEmpty(name)) {
+                    editTextName.setError("Field should not be empty.");
+                } else if (TextUtils.isEmpty(email)) {
+                    editTextEmail.setError("Field should not be empty.");
+                } else {
+                    updateUserInfo();
+                }
+
             }
         });
 

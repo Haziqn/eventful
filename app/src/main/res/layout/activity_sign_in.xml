@@ -42,7 +42,8 @@
         android:text="PASSWORD"
         android:textColor="@color/colorAccent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etEmailLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmailLogin"
+        android:layout_marginStart="8dp" />
 
     <EditText
         android:id="@+id/etPwLogin"

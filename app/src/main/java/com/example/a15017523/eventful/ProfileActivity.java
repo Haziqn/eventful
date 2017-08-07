@@ -30,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView textViewUsername, textViewEmail;
     CircleImageView imageButton;
-    Button buttonShare;
+//    Button buttonShare;
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
@@ -51,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         textViewEmail = (TextView) findViewById(R.id.tvEmail);
         textViewUsername = (TextView) findViewById(R.id.tvUsername);
-        buttonShare = (Button)findViewById(R.id.btnShare);
+//        buttonShare = (Button)findViewById(R.id.btnShare);
 
         imageButton = (CircleImageView) findViewById(R.id.imageButtonUser);
 
@@ -60,17 +60,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         final DatabaseReference mDatabaseRef = mDatabase.child(uid);
 
-        buttonShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Shareable shareAction = new Shareable.Builder(ProfileActivity.this)
-                        .message("Hi! I am using Eventful!")
-                        .url("https://drive.google.com/open?id=0B1mWK9sVsyOoZ2FEWnVON3ZLWEk")
-                        .socialChannel(Shareable.Builder.TWITTER)
-                        .build();
-                shareAction.share();
-            }
-        });
+//        buttonShare.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Shareable shareAction = new Shareable.Builder(ProfileActivity.this)
+//                        .message("Hi! I am using Eventful!")
+//                        .url("https://drive.google.com/open?id=0B1mWK9sVsyOoZ2FEWnVON3ZLWEk")
+//                        .socialChannel(Shareable.Builder.TWITTER)
+//                        .build();
+//                shareAction.share();
+//            }
+//        });
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
