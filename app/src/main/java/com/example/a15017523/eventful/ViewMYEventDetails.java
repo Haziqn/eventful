@@ -30,6 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ViewMYEventDetails extends AppCompatActivity {
 
     TextView tvAddress, tvDesc, tvStartDate, tvStartTime, tvEndDate, tvEndTime, tvOrganiser, tvHeadChief, tvTitle, tvPax, tvTimeStamp, tvType, tvOrgId;
@@ -176,7 +179,8 @@ public class ViewMYEventDetails extends AppCompatActivity {
                     myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            databaseReference.child("EVENT_PARTICIPANTS").child(user_id).child(ref).removeValue();
+                            databaseReference.child("EVENT_PARTICIPANTS").child("EVENT_PARTICIPANTS").child(user_id).child(ref).removeValue();
+                            databaseReference.child("EVENT_PARTICIPANTS").child("EVENT_PARTICIPANTS").child(itemKey).child(user_id).child(ref).setValue("left");
                         }
                     });
 

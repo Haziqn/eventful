@@ -55,7 +55,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         //Dismissing the progress dialog
 //        progressDialog.dismiss();
         //Showing a success message
-        Toast.makeText(context,"Registration Successful!",Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"Email Sent",Toast.LENGTH_LONG).show();
     }
 
     @Override

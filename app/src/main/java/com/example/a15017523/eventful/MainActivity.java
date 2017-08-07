@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -89,47 +90,13 @@ public class MainActivity extends AppCompatActivity
                 Picasso.with(getBaseContext()).load(user.getPhotoUrl().toString().trim()).into(imageViewUserDP);
             }
 
-            databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Boolean age = dataSnapshot.hasChild("age");
-                    Boolean gender = dataSnapshot.hasChild("gender");
-                    Boolean interests = dataSnapshot.hasChild("interests");
-                    Boolean race = dataSnapshot.hasChild("race");
-                    Boolean occupation = dataSnapshot.hasChild("occupation");
-                    if (!age &&
-                            !gender &&
-                            !occupation &&
-                            !race &&
-                            !interests) {
-                        Intent intent = new Intent(MainActivity.this, EditProfile.class);
-                        startActivity(intent);
-                        Snackbar snackbar = Snackbar
-                                .make(navigationView, "Please fill in your personal details", Snackbar.LENGTH_LONG);
-                        snackbar.show();
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
         } else {
+
             Intent intent = new Intent(getBaseContext(), StartActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
 
-        header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
         //replace the activity_main with Home(fragment) layout
         Home home = new Home();
         FragmentManager manager = getSupportFragmentManager();
