@@ -207,8 +207,8 @@ public class ViewEventDetails extends AppCompatActivity {
                                             String push_id = push.getKey();
 
                                             Map messageMap = new HashMap();
-                                            messageMap.put("EVENT_PARTICIPANTS/" + itemKey + "/" + user_id + "/" + push_id, "pending");
-                                            messageMap.put("EVENT_PARTICIPANTS/" + user_id + "/" + push_id, join1);
+                                            messageMap.put(org_id + "/" + itemKey + "/" + user_id + "/" + push_id, "pending");
+                                            messageMap.put(user_id + "/" + push_id, join1);
 
                                             databaseReference.child("EVENT_PARTICIPANTS").updateChildren(messageMap);
 

@@ -111,8 +111,8 @@ public class SignUp extends AppCompatActivity {
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgress.setTitle("Verifying credentials");
-                mProgress.setMessage("Checking");
+                mProgress.setTitle("Registering User");
+                mProgress.setMessage("Please while we create your account!");
                 mProgress.show();
                 name = editTextName.getText().toString().trim();
                 email = editTextEmail.getText().toString().trim();
@@ -120,8 +120,31 @@ public class SignUp extends AppCompatActivity {
                 password2 = editTextConfirmPassword.getText().toString().trim();
 
                 if (field_verification(name, email, password, password2, uri)) {
-                    mProgress.hide();
-                    startRegister();
+                    LayoutInflater inflater = (LayoutInflater)
+                            getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LinearLayout dialog =
+                            (LinearLayout) inflater.inflate(R.layout.termsandconditions, null);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
+                    builder.setTitle("Terms and Conditions")
+                            .setView(dialog)
+                            .setNegativeButton("I disagree", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setPositiveButton("I agree", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    finish();
+                                    mProgress.show();
+                                    startRegister();
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
                 } else if (uri == null) {
                     Toast.makeText(SignUp.this, "Please select an image", Toast.LENGTH_SHORT).show();
                 } else {
@@ -133,10 +156,6 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void startRegister() {
-
-            mProgress.setTitle("Registering User");
-            mProgress.setMessage("Please while we create your account!");
-            mProgress.show();
 
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
