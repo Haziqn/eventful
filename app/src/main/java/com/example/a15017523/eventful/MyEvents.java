@@ -56,7 +56,7 @@ public class MyEvents extends Fragment {
         auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseref = firebaseDatabase.getReference("EVENT_PARTICIPANTS").child("EVENT_PARTICIPANTS").child(uid);
+        databaseref = firebaseDatabase.getReference("EVENT_PARTICIPANTS").child(uid);
 
         databaseref.addChildEventListener(new ChildEventListener() {
             @Override

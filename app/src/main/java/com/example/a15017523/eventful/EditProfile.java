@@ -135,8 +135,7 @@ public class EditProfile extends AppCompatActivity {
                 myBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        databaseReference.child("EVENT_PARTICIPANTS")
-                                .child("EVENT_PARTICIPANTS").child(uid).addChildEventListener(new ChildEventListener() {
+                        databaseReference.child("EVENT_PARTICIPANTS").child(uid).addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                                 if(dataSnapshot.hasChildren()) {
