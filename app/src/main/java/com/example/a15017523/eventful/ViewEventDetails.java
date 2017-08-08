@@ -207,10 +207,19 @@ public class ViewEventDetails extends AppCompatActivity {
                                             String push_id = push.getKey();
 
                                             Map messageMap = new HashMap();
-                                            messageMap.put(org_id + "/" + itemKey + "/" + push_id + "/" + user_id, "pending");
+                                            messageMap.put(org_id + "/" + itemKey + "/" + user_id + "/" + push_id + "/status", "pending");
                                             messageMap.put(user_id + "/" + push_id, join1);
 
-                                            databaseReference.child("EVENT_PARTICIPANTS").updateChildren(messageMap);
+                                            databaseReference.child("EVENT_PARTICIPANTS").updateChildren(messageMap).addOnCompleteListener(new OnCompleteListener() {
+                                                @Override
+                                                public void onComplete(@NonNull Task task) {
+                                                    if(task.isSuccessful()) {
+                                                        Toast.makeText(ViewEventDetails.this, "okay", Toast.LENGTH_SHORT).show();
+                                                    } else if (!task.isSuccessful()) {
+                                                        Toast.makeText(ViewEventDetails.this,  task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
 
                                             sendEmail(push_id, title);
                                         }
