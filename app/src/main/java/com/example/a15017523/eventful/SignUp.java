@@ -137,7 +137,6 @@ public class SignUp extends AppCompatActivity {
                             .setPositiveButton("I agree", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
-                                    finish();
                                     mProgress.show();
                                     startRegister();
                                 }
