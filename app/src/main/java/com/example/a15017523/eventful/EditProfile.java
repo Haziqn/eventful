@@ -219,8 +219,7 @@ public class EditProfile extends AppCompatActivity {
         mProgress.setTitle("Updating User");
         mProgress.setMessage("Please while we update your account!");
         mProgress.show();
-
-        final String email = editTextEmail.getText().toString();
+        
         final String name = editTextName.getText().toString();
         final DatabaseReference userdb = mDatabase.child(userid);
 
