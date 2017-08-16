@@ -214,7 +214,7 @@ public class ViewEventDetails extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task task) {
                                                     if(task.isSuccessful()) {
-                                                        Toast.makeText(ViewEventDetails.this, "okay", Toast.LENGTH_SHORT).show();
+                                                        
                                                     } else if (!task.isSuccessful()) {
                                                         Toast.makeText(ViewEventDetails.this,  task.getException().toString(), Toast.LENGTH_SHORT).show();
                                                     }
