@@ -51,6 +51,7 @@ public class ViewEventDetails extends AppCompatActivity {
     String organiser_name;
     String org_id;
     String organiser_email;
+    String event_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +95,7 @@ public class ViewEventDetails extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 EVENT event = dataSnapshot.getValue(EVENT.class);
-                String title = event.getTitle().toString().trim();
+                event_title = event.getTitle().toString().trim();
                 String description = event.getDescription().toString().trim();
                 String image = event.getImage().toString().trim();
                 final String address = event.getLocation().toString().trim();
@@ -124,7 +125,7 @@ public class ViewEventDetails extends AppCompatActivity {
                 final Double latitude = event.getLat();
                 final Double longitude = event.getLng();
 
-                tvTitle.setText(title);
+                tvTitle.setText(event_title);
                 tvStartDate.setText(startDate);
                 tvStartTime.setText(startTime);
                 tvEndDate.setText(endDate);
@@ -161,7 +162,7 @@ public class ViewEventDetails extends AppCompatActivity {
 
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-                getSupportActionBar().setTitle(title);
+                getSupportActionBar().setTitle(event_title);
 
             }
 
@@ -214,14 +215,14 @@ public class ViewEventDetails extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task task) {
                                                     if(task.isSuccessful()) {
-                                                        
+
                                                     } else if (!task.isSuccessful()) {
                                                         Toast.makeText(ViewEventDetails.this,  task.getException().toString(), Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
 
-                                            sendEmail(push_id, title);
+                                            sendEmail(push_id, title, event_title);
                                         }
                                     }
 
@@ -318,7 +319,7 @@ public class ViewEventDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendEmail(String key, final String name) {
+    private void sendEmail(String key, final String name, final String event) {
 
         DatabaseReference mOrganiser = FirebaseDatabase.getInstance().getReference().child("ORGANISER").child(org_id);
         mOrganiser.addValueEventListener(new ValueEventListener() {
@@ -350,7 +351,7 @@ public class ViewEventDetails extends AppCompatActivity {
         //Getting content for email
         String email = FirebaseAuth.getInstance().getCurrentUser().getEmail().toString().trim();
         String subject = "Registration success for " + name;
-        String message = "You have successfully registered for an event. Your registration key is " + key + ". Please present this key to the organiser to mark your attendance" ;
+        String message = "You have successfully registered for " + event + ". Your registration key is " + key + ". Please present this key to the organiser to mark your attendance" ;
 
         //Creating SendMail object
         SendMail sm = new SendMail(this, email, subject, message);
